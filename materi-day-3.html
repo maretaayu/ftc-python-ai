@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Webinar Day 3 - NLP dengan Streamlit, OpenRouter & Hugging Face
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@300;400;500;600;700&family=Press+Start+2P&family=Russo+One&family=Orbitron:wght@400;500;700;900&family=Audiowide&family=Exo:wght@300;400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-interactivity@latest/dist/lottie-interactivity.min.js"></script>
+    <style>
+      :root {
+        /* Game-inspired Modern Color Scheme */
+        --primary-dark: #121620;
+        --secondary-dark: #1e2639;
+        --accent-primary: #4e9cf5;
+        --accent-secondary: #6c3ce9;
+        --accent-tertiary: #f565a1;
+        --accent-success: #42ca86;
+        --accent-glow: rgba(78, 156, 245, 0.5);
+
+        /* Text Colors */
+        --text-primary: #f0f2f5;
+        --text-secondary: #c9d1d9;
+        --text-muted: #8b949e;
+        --text-highlight: #ffffff;
+
+        /* Terminal & Code Colors */
+        --terminal-bg: #1e1e1e;
+        --terminal-text: #f0f2f5;
+        --code-keyword: #569cd6;
+        --code-function: #dcdcaa;
+        --code-string: #ce9178;
+        --code-comment: #6a9955;
+        --code-number: #b5cea8;
+        --code-class: #4ec9b0;
+        --code-normal: #d4d4d4;
+        --line-number-color: #858585;
+
+        /* Status Colors */
+        --success-color: #42ca86;
+        --warning-color: #e5b454;
+        --error-color: #f565a1;
+
+        /* UI Styling */
+        --border-radius: 6px;
+        --border-radius-lg: 10px;
+        --console-bg: rgba(14, 18, 27, 0.95);
+        --console-text: #f0f2f5;
+        --console-cursor: #4e9cf5;
+        --input-bg: rgba(30, 38, 57, 0.7);
+        --input-border: rgba(78, 156, 245, 0.3);
+
+        /* Gradients & Effects */
+        --accent-gradient: linear-gradient(135deg, #4e9cf5, #6c3ce9);
+        --subtle-gradient: linear-gradient(45deg, #6c3ce9, #4e9cf5, #f565a1);
+        --highlight-gradient: linear-gradient(
+          to right,
+          transparent,
+          rgba(78, 156, 245, 0.1),
+          transparent
+        );
+        --bg-gradient: radial-gradient(circle at top right, #1e2639, #121620);
+        --blue-glow: 0 0 10px rgba(78, 156, 245, 0.5);
+        --purple-glow: 0 0 10px rgba(108, 60, 233, 0.5);
+        --pink-glow: 0 0 10px rgba(245, 101, 161, 0.5);
+
+        /* Card & Section Colors */
+        --card-bg: rgba(30, 38, 57, 0.8);
+        --card-border: rgba(78, 156, 245, 0.15);
+        --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+
+        /* Pet Colors */
+        --pet-stage1-color: #00d9ff;
+        --pet-stage2-color: #9d4edd;
+        --pet-stage3-color: #ff2a6d;
+        --pet-stage4-color: #39ff14;
+        --pet-stage5-color: #f1c40f;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--primary-dark);
+        background-image: radial-gradient(
+            circle at 25% 25%,
+            rgba(108, 60, 233, 0.025) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 75% 75%,
+            rgba(78, 156, 245, 0.025) 0%,
+            transparent 50%
+          );
+        color: var(--text-primary);
+        margin: 0;
+        padding: 0;
+        overflow: auto;
+        line-height: 1.6;
+      }
+
+      /* Modal Popup Styles */
+      .modal {
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(18, 22, 32, 0.85);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+        pointer-events: none;
+        backdrop-filter: blur(8px);
+      }
+
+      .modal.show {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      .modal-content {
+        background: var(--secondary-dark);
+        margin: auto;
+        padding: 30px;
+        border-radius: var(--border-radius-lg);
+        width: 80%;
+        max-width: 500px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        position: relative;
+        transform: scale(0.7);
+        transition: transform 0.3s;
+        border: 1px solid var(--card-border);
+        overflow: hidden;
+      }
+
+      .modal-content::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: conic-gradient(
+          transparent,
+          rgba(78, 156, 245, 0.05),
+          transparent,
+          transparent
+        );
+        animation: rotate 6s linear infinite;
+        z-index: -1;
+      }
+
+      @keyframes rotate {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .modal.show .modal-content {
+        transform: scale(1);
+      }
+
+      .close-modal {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 22px;
+        cursor: pointer;
+        color: var(--text-primary);
+        transition: all 0.3s;
+        z-index: 1100;
+        width: 32px;
+        height: 32px;
+        line-height: 28px;
+        text-align: center;
+        background-color: rgba(245, 101, 161, 0.1);
+        border-radius: 50%;
+        border: 1px solid rgba(245, 101, 161, 0.3);
+        box-shadow: 0 0 10px rgba(245, 101, 161, 0.2);
+      }
+
+      .close-modal:hover {
+        color: var(--text-highlight);
+        background-color: rgba(245, 101, 161, 0.2);
+        transform: scale(1.1);
+      }
+
+      .modal-content h2 {
+        color: var(--accent-primary);
+        margin-top: 0;
+        text-shadow: 0 0 10px rgba(78, 156, 245, 0.4);
+        font-family: "Montserrat", sans-serif;
+        font-size: 22px;
+        letter-spacing: 1px;
+        line-height: 1.4;
+        text-transform: uppercase;
+        position: relative;
+        display: inline-block;
+      }
+
+      .modal-content h2::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50%;
+        height: 3px;
+        background: var(--cyber-gradient);
+        box-shadow: 0 0 15px rgba(0, 217, 255, 0.7);
+      }
+
+      .sidebar {
+        width: 250px;
+        background-color: var(--card-bg);
+        padding: 25px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        z-index: 5;
+        border-right: 1px solid var(--card-border);
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .sidebar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(78, 156, 245, 0.02) 0%,
+          transparent 50%
+        );
+        z-index: -1;
+      }
+
+      .sidebar::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 1px;
+        height: 100%;
+        background: linear-gradient(
+          to bottom,
+          transparent,
+          var(--accent-primary),
+          transparent
+        );
+        opacity: 0.5;
+      }
+
+      .main-content {
+        flex: 1;
+        padding: 30px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .main-content::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+            circle at 15% 50%,
+            rgba(157, 78, 221, 0.03) 0%,
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 85% 30%,
+            rgba(0, 217, 255, 0.03) 0%,
+            transparent 30%
+          );
+        z-index: -1;
+      }
+
+      .slide {
+        display: none;
+        background-color: var(--secondary-dark);
+        padding: 35px;
+        border-radius: var(--border-radius);
+        margin-bottom: 30px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        max-width: 800px;
+        margin: 0 auto 30px auto;
+        overflow: auto;
+        border: 1px solid rgba(0, 217, 255, 0.15);
+        position: relative;
+        backdrop-filter: blur(5px);
+      }
+
+      .slide::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--cyber-gradient);
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+      }
+
+      .slide::after {
+        content: "";
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 8px;
+        height: 8px;
+        background: var(--accent-neon-green);
+        border-radius: 50%;
+        box-shadow: 0 0 10px var(--accent-neon-green);
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          opacity: 0.6;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.1);
+        }
+        100% {
+          opacity: 0.6;
+          transform: scale(1);
+        }
+      }
+
+      .slide p {
+        line-height: 1.8;
+        font-size: 16px;
+        color: var(--text-secondary);
+        letter-spacing: 0.3px;
+      }
+
+      .slide.active {
+        display: block;
+        animation: slideIn 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .slide h2 {
+        color: var(--accent-neon-blue);
+        margin-top: 0;
+        font-family: "Orbitron", sans-serif;
+        font-weight: 700;
+        font-size: 24px;
+        letter-spacing: 2px;
+        margin-bottom: 30px;
+        display: inline-block;
+        position: relative;
+        text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+        line-height: 1.4;
+        text-transform: uppercase;
+      }
+
+      .slide h2::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 50%;
+        height: 2px;
+        background: var(--cyber-gradient);
+        box-shadow: 0 0 15px rgba(0, 217, 255, 0.7);
+      }
+
+      .slide h3 {
+        font-family: "Exo", sans-serif;
+        font-weight: 600;
+        font-size: 20px;
+        color: var(--accent-neon-purple);
+        margin-top: 30px;
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+        text-shadow: 0 0 8px rgba(157, 78, 221, 0.4);
+        line-height: 1.5;
+        position: relative;
+        display: inline-block;
+      }
+
+      .slide h3::before {
+        content: "";
+        position: absolute;
+        left: -25px;
+      }
+
+      .slide h4 {
+        font-family: "Rajdhani", sans-serif;
+        font-weight: 600;
+        font-size: 18px;
+        color: var(--accent-neon-pink);
+        margin-top: 25px;
+        margin-bottom: 12px;
+        letter-spacing: 0.5px;
+        text-shadow: 0 0 5px rgba(255, 42, 109, 0.3);
+        text-transform: uppercase;
+      }
+
+      code {
+        background-color: var(--terminal-bg);
+        padding: 20px;
+        border-radius: var(--border-radius);
+        font-family: "JetBrains Mono", monospace;
+        display: block;
+        margin: 25px 0;
+        white-space: pre;
+        color: var(--terminal-text);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        overflow-x: auto;
+        font-size: 14px;
+        line-height: 1.6;
+        border: 1px solid rgba(78, 156, 245, 0.2);
+        position: relative;
+      }
+
+      .code-line {
+        display: block;
+        line-height: 1.6;
+      }
+
+      .code-line:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      code::after {
+        display: none; /* Remove the blinking cursor */
+      }
+
+      .code-copy-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(108, 60, 233, 0.2);
+        border: 1px solid rgba(108, 60, 233, 0.3);
+        border-radius: 4px;
+        color: var(--text-primary);
+        padding: 5px 10px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-family: "Inter", sans-serif;
+      }
+
+      .code-copy-btn:hover {
+        background: rgba(108, 60, 233, 0.3);
+        transform: translateY(-2px);
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+
+      .info-box {
+        background-color: rgba(78, 156, 245, 0.1);
+        border-left: 4px solid var(--accent-primary);
+        padding: 20px;
+        margin: 25px 0;
+        border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+
+      .info-box::before {
+        content: "ℹ️";
+        position: absolute;
+        top: 10px;
+        left: -12px;
+        background-color: var(--secondary-dark);
+        color: var(--accent-primary);
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 14px;
+        box-shadow: 0 0 10px rgba(78, 156, 245, 0.3);
+        border: 1px solid rgba(78, 156, 245, 0.3);
+      }
+
+      .warning-box {
+        background-color: rgba(229, 180, 84, 0.1);
+        border-left: 4px solid var(--warning-color);
+        padding: 20px;
+        margin: 25px 0;
+        border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+
+      .warning-box::before {
+        content: "⚠️";
+        position: absolute;
+        top: 10px;
+        left: -12px;
+        background-color: var(--secondary-dark);
+        color: var(--warning-color);
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 14px;
+        box-shadow: 0 0 10px rgba(229, 180, 84, 0.3);
+        border: 1px solid rgba(229, 180, 84, 0.3);
+      }
+
+      /* Navigasi antar slide */
+      .navigation {
+        display: flex;
+        justify-content: space-between;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px 0;
+      }
+
+      .nav-button {
+        background-color: rgba(78, 156, 245, 0.1);
+        color: var(--text-secondary);
+        border: 1px solid rgba(78, 156, 245, 0.2);
+        padding: 10px 20px;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: all 0.3s;
+        font-family: "Inter", sans-serif;
+        font-weight: 500;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-button:hover {
+        background-color: rgba(78, 156, 245, 0.2);
+        color: var(--text-highlight);
+        box-shadow: 0 0 15px rgba(78, 156, 245, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .nav-button:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      @keyframes shine {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+
+      /* Daftar isi */
+      .menu {
+        list-style-type: none;
+        padding: 0;
+        margin: 0 0 25px 0;
+      }
+
+      .menu-item {
+        background-color: rgba(30, 38, 57, 0.5);
+        margin: 8px 0;
+        padding: 12px 15px;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: all 0.3s;
+        border-left: 3px solid transparent;
+        font-weight: 500;
+        font-size: 14px;
+        color: var(--text-secondary);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .menu-item:hover {
+        background-color: rgba(78, 156, 245, 0.1);
+        border-left-color: var(--accent-primary);
+        color: var(--text-highlight);
+        transform: translateX(5px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .menu-item:hover::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 3px;
+        height: 100%;
+        background: var(--accent-gradient);
+        opacity: 0.8;
+      }
+
+      .menu-item.active {
+        background-color: rgba(78, 156, 245, 0.15);
+        border-left-color: var(--accent-primary);
+        color: var(--text-highlight);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        transform: translateX(5px);
+      }
+
+      .menu-item.active::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 3px;
+        height: 100%;
+        background: var(--accent-gradient);
+        box-shadow: var(--blue-glow);
+      }
+
+      .menu-item::after {
+        content: "→";
+        position: absolute;
+        right: 15px;
+        opacity: 0;
+        transition: all 0.3s;
+        color: var(--accent-neon-blue);
+      }
+
+      .menu-item:hover::after {
+        opacity: 0.8;
+        right: 10px;
+      }
+
+      .menu-item.active::after {
+        opacity: 1;
+        right: 10px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        display: flex;
+        gap: 30px;
+        position: relative;
+      }
+
+      @media screen and (max-width: 768px) {
+        .container {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: auto;
+          margin-bottom: 20px;
+        }
+
+        .slide {
+          padding: 25px 20px;
+        }
+
+        code {
+          font-size: 13px;
+          padding: 15px;
+          line-height: 1.4;
+        }
+
+        .menu-item {
+          margin: 8px 0;
+          padding: 10px;
+          font-size: 13px;
+        }
+      }
+
+      /* List style */
+      .slide ul {
+        padding-left: 20px;
+        margin: 20px 0;
+      }
+
+      .slide li {
+        margin-bottom: 12px;
+        position: relative;
+        padding-left: 8px;
+        color: var(--text-secondary);
+      }
+
+      .slide li::marker {
+        color: var(--accent-neon-green);
+        font-size: 1.2em;
+      }
+
+      /* Highlight text */
+      .highlight {
+        color: var(--accent-neon-blue);
+        text-shadow: 0 0 5px rgba(0, 217, 255, 0.3);
+        font-weight: 600;
+      }
+
+      .highlight-purple {
+        color: var(--accent-neon-purple);
+        text-shadow: 0 0 5px rgba(157, 78, 221, 0.3);
+        font-weight: 600;
+      }
+
+      .highlight-green {
+        color: var(--accent-neon-green);
+        text-shadow: 0 0 5px rgba(57, 255, 20, 0.3);
+        font-weight: 600;
+      }
+
+      .highlight-pink {
+        color: var(--accent-neon-pink);
+        text-shadow: 0 0 5px rgba(255, 42, 109, 0.3);
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <div class="pet-container">
+          <h3 style="margin-top: 0; margin-bottom: 15px">
+            🚀 Webinar Day 3 🚀
+          </h3>
+          <div class="pet-avatar">
+            <div class="pet pet-stage-4"></div>
+          </div>
+          <p style="margin-bottom: 0; text-align: center">
+            <span style="font-size: 12px; color: var(--text-muted)"
+              >Python AI Bootcamp</span
+            >
+          </p>
+        </div>
+        <h3
+          style="
+            margin-top: 0;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-neon-blue);
+            text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+          "
+        >
+          Daftar Isi
+        </h3>
+        <ul class="menu">
+          <li class="menu-item active" onclick="showSlide(0)">
+            Pendahuluan Webinar
+          </li>
+          <li class="menu-item" onclick="showSlide(1)">Dasar-dasar AI & NLP</li>
+          <li class="menu-item" onclick="showSlide(2)">Tools yang Digunakan</li>
+          <li class="menu-item" onclick="showSlide(3)">
+            Pipeline Hugging Face
+          </li>
+          <li class="menu-item" onclick="showSlide(4)">
+            Praktik 1: Translator
+          </li>
+          <li class="menu-item" onclick="showSlide(5)">Praktik 2: Chatbot</li>
+          <li class="menu-item" onclick="showSlide(6)">Penutup & Diskusi</li>
+        </ul>
+      </div>
+
+      <div class="main-content">
+        <div class="slide active" id="slide-0">
+          <h2>
+            Webinar Day 3: Praktik NLP dengan Streamlit + OpenRouter + Hugging
+            Face 🚀
+          </h2>
+          <p>
+            Selamat datang di webinar hari ketiga! Hari ini kita akan belajar
+            membuat aplikasi sederhana berbasis AI yang dapat digunakan dalam
+            kehidupan sehari-hari. Kita akan menggabungkan beberapa teknologi
+            canggih untuk membuat aplikasi yang menarik dan bermanfaat.
+          </p>
+
+          <div class="info-box">
+            <p>
+              <b>Target pembelajaran hari ini:</b> Membuat aplikasi AI
+              interaktif dengan menggunakan Streamlit, Hugging Face Transformers
+              untuk terjemahan bahasa, dan OpenRouter untuk membuat chatbot
+              seperti ChatGPT.
+            </p>
+          </div>
+
+          <h3>Tujuan Webinar</h3>
+          <p>Di webinar hari ini, peserta akan belajar:</p>
+          <ul>
+            <li>
+              <span class="highlight-purple">Streamlit</span> - Framework Python
+              untuk membuat web app sederhana
+            </li>
+            <li>
+              <span class="highlight-blue">Hugging Face Transformers</span> -
+              Library untuk fitur terjemahan bahasa
+            </li>
+            <li>
+              <span class="highlight-green">OpenRouter</span> - Platform untuk
+              membuat chatbot seperti ChatGPT
+            </li>
+          </ul>
+
+          <p>
+            Materi ini ditargetkan untuk pemula, sehingga semua tahapan akan
+            dijelaskan secara bertahap dan mudah dipahami.
+          </p>
+
+          <h3>Agenda Webinar</h3>
+          <p>Kita akan membahas beberapa bagian penting:</p>
+          <ul>
+            <li>Dasar-dasar AI & NLP</li>
+            <li>Tools yang digunakan (Streamlit, Hugging Face, OpenRouter)</li>
+            <li>Mengenal "Pipeline" di Hugging Face</li>
+            <li>Praktik 1: Membuat Real-time Translator</li>
+            <li>Praktik 2: Membuat Chatbot dengan OpenRouter</li>
+            <li>Penutup & Diskusi</li>
+          </ul>
+
+          <p>
+            Mari kita mulai perjalanan kita ke dunia AI dan NLP dengan semangat
+            eksplorasi dan keingintahuan!
+          </p>
+        </div>
+
+        <div class="slide" id="slide-1">
+          <h2>Bagian 1: Dasar-dasar AI & NLP 🤖</h2>
+          <p>
+            Sebelum kita masuk ke praktik, mari kita pahami dulu beberapa konsep
+            dasar tentang AI dan NLP yang akan menjadi fondasi pengetahuan kita.
+          </p>
+
+          <h3>Apa itu AI?</h3>
+          <p>
+            Artificial Intelligence (AI) adalah teknologi yang memungkinkan
+            komputer melakukan tugas-tugas yang biasanya membutuhkan kecerdasan
+            manusia, seperti:
+          </p>
+          <ul>
+            <li>Mengenali suara dan gambar</li>
+            <li>Memahami bahasa manusia</li>
+            <li>Menerjemahkan antar bahasa</li>
+            <li>Membuat keputusan berdasarkan data</li>
+            <li>Menjawab pertanyaan kompleks</li>
+          </ul>
+
+          <div class="info-box">
+            <p>
+              <strong>Fun Fact:</strong> Pada tahun 2023, lebih dari 80%
+              perusahaan global sudah menggunakan setidaknya satu bentuk AI
+              dalam operasi mereka, mulai dari chatbot customer service hingga
+              analisis data prediktif.
+            </p>
+          </div>
+
+          <h3>Apa itu NLP?</h3>
+          <p>
+            Natural Language Processing (NLP) adalah cabang dari AI yang
+            berfokus pada interaksi antara komputer dan bahasa manusia. NLP
+            memungkinkan komputer untuk:
+          </p>
+          <ul>
+            <li>
+              <span class="highlight-green">Memahami teks</span> - Mengekstrak
+              makna dari kata-kata
+            </li>
+            <li>
+              <span class="highlight-blue">Menganalisis makna</span> - Menangkap
+              konteks dan hubungan antar kata
+            </li>
+            <li>
+              <span class="highlight-purple">Menerjemahkan bahasa</span> -
+              Mengubah teks dari satu bahasa ke bahasa lain
+            </li>
+            <li>
+              <span class="highlight-pink">Menjawab pertanyaan</span> -
+              Memberikan respons yang relevan terhadap query
+            </li>
+            <li>
+              <span class="highlight">Mengobrol dengan manusia</span> -
+              Berkomunikasi dalam percakapan yang natural
+            </li>
+          </ul>
+
+          <h3>Contoh Penggunaan NLP dalam Kehidupan Sehari-hari</h3>
+          <p>
+            NLP sudah banyak digunakan dalam aplikasi yang kita pakai
+            sehari-hari:
+          </p>
+          <ul>
+            <li>Google Translate</li>
+            <li>Siri / Alexa / Google Assistant</li>
+            <li>ChatGPT dan asisten AI serupa</li>
+            <li>Deteksi sentimen di media sosial</li>
+            <li>Koreksi tata bahasa dan spelling dalam aplikasi penulisan</li>
+            <li>Filter email spam</li>
+          </ul>
+        </div>
+
+        <div class="slide" id="slide-2">
+          <h2>Bagian 2: Tools yang Digunakan 🛠️</h2>
+          <p>
+            Untuk membuat aplikasi AI yang menarik dan fungsional, kita akan
+            menggunakan beberapa tools yang poweful namun tetap mudah digunakan
+            oleh pemula.
+          </p>
+
+          <h3>1. Streamlit</h3>
+          <p>
+            Streamlit adalah framework Python yang memungkinkan kita membuat web
+            app dengan cepat dan mudah.
+          </p>
+          <ul>
+            <li>Framework spesial untuk membuat aplikasi data & AI</li>
+            <li>Sangat mudah dipelajari, bahkan untuk pemula</li>
+            <li>Perubahan kode langsung terlihat (hot-reloading)</li>
+            <li>Mendukung berbagai elemen UI interaktif</li>
+            <li>Bisa di-deploy secara gratis di Streamlit Cloud</li>
+          </ul>
+
+          <p>Contoh sederhana app Streamlit:</p>
+          <code>
+            import streamlit as st st.title("Aplikasi Pertamaku") nama =
+            st.text_input("Masukkan namamu:") if nama: st.write(f"Halo {nama},
+            selamat datang!") if st.button("Klik aku!"): st.balloons()
+          </code>
+
+          <h3>2. Hugging Face Transformers</h3>
+          <p>
+            Hugging Face Transformers adalah library open-source yang
+            menyediakan ribuan model AI siap pakai.
+          </p>
+          <ul>
+            <li>Akses ke ribuan model NLP state-of-the-art</li>
+            <li>API yang sederhana dan konsisten</li>
+            <li>Mendukung berbagai tugas NLP (terjemahan, klasifikasi, dll)</li>
+            <li>Terintegrasi baik dengan ekosistem Python</li>
+            <li>Komunitas aktif dan dokumentasi lengkap</li>
+          </ul>
+
+          <h3>3. OpenRouter</h3>
+          <p>
+            OpenRouter adalah platform yang menyediakan akses ke berbagai model
+            AI generatif melalui API yang seragam.
+          </p>
+          <ul>
+            <li>
+              Akses ke model-model terbaik seperti GPT-4, Claude, Llama, dll
+            </li>
+            <li>API sederhana dan konsisten</li>
+            <li>Gratis untuk dicoba (kredit awal)</li>
+            <li>Dapat digunakan dari aplikasi Python dengan mudah</li>
+            <li>Mendukung berbagai fitur canggih seperti streaming respons</li>
+          </ul>
+
+          <div class="info-box">
+            <p>
+              <strong>Tip:</strong> Kombinasi Streamlit + Hugging Face +
+              OpenRouter menjadi "trinity" yang sangat powerful untuk membuat
+              aplikasi AI sederhana namun canggih dalam waktu singkat!
+            </p>
+          </div>
+        </div>
+
+        <div class="slide" id="slide-3">
+          <h2>Bagian 3: Mengenal "Pipeline" di Hugging Face 🚇</h2>
+          <p>
+            Salah satu fitur paling powerful dari Hugging Face Transformers
+            adalah "Pipeline" - cara termudah untuk menggunakan model NLP dengan
+            hanya beberapa baris kode.
+          </p>
+
+          <h3>Apa itu Pipeline?</h3>
+          <p>
+            Pipeline adalah abstraksi tingkat tinggi yang menggabungkan beberapa
+            langkah pemrosesan menjadi satu fungsi sederhana. Dengan pipeline,
+            kita dapat melakukan tugas NLP kompleks hanya dengan menggunakan dua
+            baris kode!
+          </p>
+
+          <p>Langkah-langkah yang dihandle pipeline secara otomatis:</p>
+          <ul>
+            <li>Pre-processing input (tokenisasi, konversi format, dll)</li>
+            <li>Forward pass melalui model neural network</li>
+            <li>Post-processing output (decoding, formatting)</li>
+          </ul>
+
+          <h3>Jenis-jenis Pipeline yang Tersedia</h3>
+          <p>
+            Hugging Face menyediakan berbagai pipeline untuk tugas NLP yang
+            berbeda:
+          </p>
+          <ul>
+            <li>
+              <span class="highlight-purple">translation</span> - Menerjemahkan
+              teks antar bahasa
+            </li>
+            <li>
+              <span class="highlight-blue">text-classification</span> -
+              Mengklasifikasikan teks (sentimen, topik, dll)
+            </li>
+            <li>
+              <span class="highlight-green">question-answering</span> - Menjawab
+              pertanyaan berdasarkan konteks
+            </li>
+            <li>
+              <span class="highlight-pink">summarization</span> - Merangkum teks
+              panjang
+            </li>
+            <li>
+              <span class="highlight">text-generation</span> - Menghasilkan teks
+              baru dari prompt
+            </li>
+            <li>
+              <span class="highlight">fill-mask</span> - Mengisi kata yang
+              hilang dalam kalimat
+            </li>
+          </ul>
+
+          <h3>Contoh Penggunaan Pipeline</h3>
+          <p>Mari lihat beberapa contoh sederhana penggunaan pipeline:</p>
+
+          <h4>Terjemahan Bahasa</h4>
+          <code>
+            from transformers import pipeline # Inisialisasi pipeline terjemahan
+            (Indonesia -> Inggris) translator = pipeline("translation",
+            model="Helsinki-NLP/opus-mt-id-en") # Terjemahkan teks result =
+            translator("Apa kabar? Saya sedang belajar
+            NLP.")[0]['translation_text'] print(result) # "How are you? I am
+            learning NLP."
+          </code>
+
+          <h4>Klasifikasi Sentimen</h4>
+          <code>
+            # Inisialisasi pipeline analisis sentimen sentiment_analyzer =
+            pipeline("sentiment-analysis") # Analisis sentimen result =
+            sentiment_analyzer("I love this product, it's amazing!")[0]
+            print(result) # {'label': 'POSITIVE', 'score': 0.9998}
+          </code>
+
+          <div class="info-box">
+            <p>
+              <strong>Tip:</strong> Pipeline adalah cara terbaik untuk memulai
+              dengan NLP, terutama untuk pemula yang belum familiar dengan
+              detail teknis model transformers.
+            </p>
+          </div>
+        </div>
+
+        <div class="slide" id="slide-4">
+          <h2>Bagian 4: Praktik 1 — Real-time Translator 🌍</h2>
+          <p>
+            Sekarang kita akan membuat aplikasi pertama kita: Real-time
+            Translator yang mengubah teks Bahasa Indonesia menjadi Bahasa
+            Inggris!
+          </p>
+
+          <h3>Fitur Aplikasi</h3>
+          <p>Aplikasi terjemahan kita akan memiliki fitur berikut:</p>
+          <ul>
+            <li>Input teks Bahasa Indonesia</li>
+            <li>Output terjemahan Bahasa Inggris</li>
+            <li>UI sederhana dan interaktif dengan Streamlit</li>
+            <li>Indikator loading saat menerjemahkan</li>
+          </ul>
+
+          <h3>Setup Awal</h3>
+          <p>Pertama, kita perlu menginstal library yang dibutuhkan:</p>
+          <code>
+            # Jalankan di terminal pip install streamlit transformers
+          </code>
+
+          <h3>Kode Aplikasi Translator</h3>
+          <p>Berikut adalah kode lengkap untuk aplikasi terjemahan kita:</p>
+          <code>
+            import streamlit as st from transformers import pipeline #
+            Inisialisasi pipeline untuk terjemahan translator =
+            pipeline("translation", model="Helsinki-NLP/opus-mt-id-en") # UI
+            Streamlit st.title("🗣️ Real-time Bahasa Translator")
+            st.write("Masukkan teks Bahasa Indonesia dan lihat terjemahannya ke
+            Bahasa Inggris.") text_input = st.text_area("Tulis kalimat Bahasa
+            Indonesia di sini:") if st.button("Terjemahkan"): if
+            text_input.strip(): with st.spinner("Menerjemahkan..."): result =
+            translator(text_input, max_length=100)[0]["translation_text"]
+            st.success("Hasil Terjemahan:") st.write(f"**{result}**") else:
+            st.warning("Tolong masukkan teks terlebih dahulu.")
+          </code>
+
+          <h3>Penjelasan Kode</h3>
+          <p>Mari kita bahas kode di atas secara lebih detail:</p>
+          <ol>
+            <li>
+              <span class="highlight-purple">Import dan Setup</span>
+              <ul>
+                <li>
+                  Kita mengimpor Streamlit untuk UI dan pipeline dari
+                  Transformers
+                </li>
+                <li>
+                  Kita inisialisasi pipeline terjemahan dengan model
+                  "Helsinki-NLP/opus-mt-id-en"
+                </li>
+              </ul>
+            </li>
+            <li>
+              <span class="highlight-blue">UI Aplikasi</span>
+              <ul>
+                <li>Kita membuat judul dan deskripsi aplikasi</li>
+                <li>Menambahkan text area untuk input pengguna</li>
+                <li>Menambahkan tombol "Terjemahkan" untuk memulai proses</li>
+              </ul>
+            </li>
+            <li>
+              <span class="highlight-green">Logika Terjemahan</span>
+              <ul>
+                <li>Memeriksa apakah teks input tidak kosong</li>
+                <li>Menampilkan spinner saat menerjemahkan (UX yang baik)</li>
+                <li>Memanggil model terjemahan dan mengambil hasil</li>
+                <li>Menampilkan hasil dengan format yang bagus</li>
+              </ul>
+            </li>
+          </ol>
+
+          <div class="warning-box">
+            <p>
+              <strong>Catatan:</strong> Download model ini mungkin memerlukan
+              waktu saat pertama kali dijalankan. Ini normal karena model NLP
+              biasanya berukuran besar (ratusan MB). Setelah diunduh, model akan
+              di-cache secara lokal sehingga aplikasi akan jauh lebih cepat pada
+              penggunaan berikutnya.
+            </p>
+          </div>
+        </div>
+
+        <div class="slide" id="slide-5">
+          <h2>
+            Bagian 5: Praktik 2 — Chatbot dengan OpenRouter + Streamlit 🤖
+          </h2>
+          <p>
+            Sekarang kita akan membuat aplikasi chatbot yang menggunakan model
+            AI canggih melalui OpenRouter. Chatbot ini dapat menjawab
+            pertanyaan, memberikan informasi, dan berinteraksi dalam bahasa
+            natural.
+          </p>
+
+          <h3>Persiapan OpenRouter</h3>
+          <p>Sebelum mulai coding, kita perlu menyiapkan akun OpenRouter:</p>
+          <ol>
+            <li>
+              Daftar akun di
+              <a href="https://openrouter.ai" target="_blank">openrouter.ai</a>
+            </li>
+            <li>Login dan dapatkan API Key dari dashboard</li>
+            <li>Catat API Key untuk digunakan dalam aplikasi kita</li>
+          </ol>
+
+          <div class="info-box">
+            <p>
+              <strong>Info:</strong> OpenRouter memberikan kredit gratis untuk
+              mencoba berbagai model AI. Untuk demo ini, kredit gratis sudah
+              lebih dari cukup.
+            </p>
+          </div>
+
+          <h3>Instalasi Library Tambahan</h3>
+          <p>
+            Kita perlu menambahkan library requests untuk berkomunikasi dengan
+            API:
+          </p>
+          <code> pip install requests </code>
+
+          <h3>Kode Aplikasi Chatbot</h3>
+          <p>Berikut adalah kode lengkap untuk aplikasi chatbot kita:</p>
+          <code>
+            import streamlit as st import requests import os # Set API Key dari
+            OpenRouter (ganti dengan key milikmu) OPENROUTER_API_KEY =
+            "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"
+            headers = { "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+            "HTTP-Referer": "https://yourapp.com", "Content-Type":
+            "application/json", } st.title("🧠 Chatbot dengan OpenRouter")
+            st.write("Tanyakan apa saja pada asisten AI!") # Inisialisasi chat
+            history dalam session state if "messages" not in st.session_state:
+            st.session_state.messages = [] # Tampilkan riwayat chat for message
+            in st.session_state.messages: with st.chat_message(message["role"]):
+            st.markdown(message["content"]) # Input area untuk pertanyaan
+            pengguna message = st.chat_input("Tulis pertanyaan kamu di sini...")
+            if message: # Tambahkan pesan pengguna ke history dan UI
+            st.session_state.messages.append({"role": "user", "content":
+            message}) with st.chat_message("user"): st.markdown(message) #
+            Persiapkan payload untuk API payload = { "model":
+            "openrouter/openchat", # Model yang digunakan "messages": [ {"role":
+            "system", "content": "Kamu adalah asisten AI yang membantu, ramah,
+            dan informatif."}, *st.session_state.messages # Kirim semua riwayat
+            chat ] } # Kirim request ke OpenRouter with
+            st.spinner("Berpikir..."): res = requests.post(
+            "https://openrouter.ai/api/v1/chat/completions", headers=headers,
+            json=payload ) if res.status_code == 200: # Dapatkan respons dan
+            tampilkan result = res.json()["choices"][0]["message"]["content"] #
+            Tambahkan respons ke history
+            st.session_state.messages.append({"role": "assistant", "content":
+            result}) # Tampilkan di UI with st.chat_message("assistant"):
+            st.markdown(result) else: st.error(f"Error: {res.status_code},
+            {res.text}")
+          </code>
+
+          <h3>Penjelasan Kode</h3>
+          <p>Mari kita pahami bagian-bagian penting dari kode di atas:</p>
+          <ul>
+            <li>
+              <span class="highlight-purple">Setup API</span> - Mengonfigurasi
+              koneksi ke OpenRouter dengan API key
+            </li>
+            <li>
+              <span class="highlight-blue">Manajemen State</span> - Menggunakan
+              st.session_state untuk menyimpan riwayat chat
+            </li>
+            <li>
+              <span class="highlight-green">UI Chat</span> - Menggunakan
+              st.chat_message untuk tampilan chat yang menarik
+            </li>
+            <li>
+              <span class="highlight-pink">Integrasi API</span> - Mengirim
+              request dengan riwayat chat lengkap untuk konteks percakapan
+            </li>
+          </ul>
+
+          <div class="warning-box">
+            <p>
+              <strong>Keamanan:</strong> Untuk aplikasi produksi, jangan
+              hard-coding API key dalam kode. Gunakan variabel lingkungan,
+              secrets manager Streamlit, atau metode aman lainnya.
+            </p>
+          </div>
+        </div>
+
+        <div class="slide" id="slide-6">
+          <h2>Bagian 6: Penutup & Diskusi 🎉</h2>
+          <p>
+            Selamat! Kita telah berhasil membuat dua aplikasi AI interaktif
+            menggunakan teknologi modern: translator real-time dan chatbot AI.
+            Mari kita rangkum pembelajaran hari ini dan bahas langkah
+            selanjutnya untuk pengembangan skill AI kamu.
+          </p>
+
+          <h3>Recap Pembelajaran</h3>
+          <p>Hari ini kita telah belajar tentang:</p>
+          <ul>
+            <li>Dasar-dasar AI dan NLP</li>
+            <li>Penggunaan Streamlit untuk membuat web app interaktif</li>
+            <li>Pipeline Hugging Face untuk tugas terjemahan bahasa</li>
+            <li>Integrasi dengan OpenRouter untuk membuat chatbot AI</li>
+            <li>Mengelola state dan UI interaktif dalam aplikasi</li>
+          </ul>
+
+          <h3>Saran Latihan Lanjutan</h3>
+          <p>
+            Untuk mengembangkan skill kamu lebih lanjut, cobalah beberapa
+            latihan berikut:
+          </p>
+          <ol>
+            <li>
+              <span class="highlight-purple">Eksplorasi Pipeline Lain</span> -
+              Coba pipeline berbeda seperti text-classification, summarization,
+              atau question-answering
+            </li>
+            <li>
+              <span class="highlight-blue">Fitur History</span> - Tambahkan
+              fitur untuk menyimpan riwayat terjemahan atau percakapan chatbot
+            </li>
+            <li>
+              <span class="highlight-green">Kombinasi App</span> - Gabungkan
+              translator dan chatbot menjadi satu aplikasi terintegrasi
+            </li>
+            <li>
+              <span class="highlight-pink">Multi-language</span> - Tambahkan
+              dukungan untuk lebih banyak bahasa dalam aplikasi translator
+            </li>
+            <li>
+              <span class="highlight">Deployment</span> - Deploy aplikasi kamu
+              di Streamlit Cloud agar bisa diakses siapa saja
+            </li>
+          </ol>
+
+          <div class="info-box">
+            <p>
+              <strong>Resource Belajar Lanjutan:</strong>
+            </p>
+            <ul>
+              <li>
+                <a href="https://huggingface.co/tasks" target="_blank"
+                  >Hugging Face Tasks</a
+                >
+                - Daftar lengkap tugas NLP dan model-model terkait
+              </li>
+              <li>
+                <a href="https://streamlit.io/" target="_blank"
+                  >Streamlit Documentation</a
+                >
+                - Panduan lengkap Streamlit
+              </li>
+              <li>
+                <a href="https://openrouter.ai/" target="_blank">OpenRouter</a>
+                - Pelajari lebih lanjut tentang model-model yang tersedia
+              </li>
+            </ul>
+          </div>
+
+          <h3>Penutup</h3>
+          <p>
+            AI dan NLP adalah teknologi yang berkembang sangat pesat dan
+            menggairahkan. Dengan dasar-dasar yang kamu pelajari hari ini, kamu
+            sudah siap untuk mengeksplorasi lebih jauh dan membangun aplikasi AI
+            yang lebih kompleks dan berguna.
+          </p>
+
+          <p>
+            Ingat bahwa kunci menjadi mahir dalam AI adalah praktek
+            terus-menerus dan rasa ingin tahu. Jangan takut untuk bereksperimen,
+            membuat kesalahan, dan belajar dari proses tersebut.
+          </p>
+
+          <p>
+            Terima kasih telah berpartisipasi dalam webinar ini! Semoga
+            pembelajaran hari ini bermanfaat dan membuka pintu baru dalam
+            perjalanan belajarmu.
+          </p>
+
+          <div class="warning-box">
+            <p>
+              <strong>Feedback:</strong> Kami sangat menghargai feedbackmu
+              tentang webinar ini. Silakan isi form evaluasi yang akan dibagikan
+              untuk membantu kami meningkatkan materi dan penyampaian di
+              webinar-webinar selanjutnya.
+            </p>
+          </div>
+        </div>
+
+        <div class="navigation">
+          <button
+            class="nav-button"
+            id="prevBtn"
+            onclick="changeSlide(-1)"
+            disabled
+          >
+            ⬅️ Sebelumnya
+          </button>
+          <button class="nav-button" id="nextBtn" onclick="changeSlide(1)">
+            Selanjutnya ➡️
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Copyright &copy; 2025 | Python AI Webinar Day 3 | Made with 🤖
+    </div>
+
+    <script>
+      let currentSlide = 0;
+      const slides = document.querySelectorAll(".slide");
+      const menuItems = document.querySelectorAll(".menu-item");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+
+      // Format code blocks to look like modern IDE with copy button
+      function formatCodeBlocks() {
+        const codeBlocks = document.querySelectorAll("code");
+
+        codeBlocks.forEach((block) => {
+          // Format the code with proper indentation
+          const formattedCode = formatPythonCode(block.textContent);
+          block.textContent = formattedCode;
+
+          // Add copy button to each code block
+          const copyButton = document.createElement("button");
+          copyButton.textContent = "Copy";
+          copyButton.style.position = "absolute";
+          copyButton.style.top = "10px";
+          copyButton.style.right = "10px";
+          copyButton.style.background = "rgba(108, 60, 233, 0.2)";
+          copyButton.style.border = "1px solid rgba(108, 60, 233, 0.3)";
+          copyButton.style.borderRadius = "4px";
+          copyButton.style.color = "var(--text-primary)";
+          copyButton.style.padding = "5px 10px";
+          copyButton.style.fontSize = "12px";
+          copyButton.style.cursor = "pointer";
+          copyButton.style.transition = "all 0.3s";
+          copyButton.style.fontFamily = '"Inter", sans-serif';
+          copyButton.style.zIndex = "10";
+
+          copyButton.addEventListener("mouseover", function () {
+            this.style.background = "rgba(108, 60, 233, 0.3)";
+            this.style.transform = "translateY(-2px)";
+          });
+
+          copyButton.addEventListener("mouseout", function () {
+            this.style.background = "rgba(108, 60, 233, 0.2)";
+            this.style.transform = "translateY(0)";
+          });
+
+          copyButton.addEventListener("click", function () {
+            const code = block.textContent;
+            navigator.clipboard.writeText(code).then(() => {
+              const originalText = this.textContent;
+              this.textContent = "Copied!";
+              this.style.background = "rgba(66, 202, 134, 0.2)";
+              this.style.border = "1px solid rgba(66, 202, 134, 0.3)";
+
+              setTimeout(() => {
+                this.textContent = originalText;
+                this.style.background = "rgba(108, 60, 233, 0.2)";
+                this.style.border = "1px solid rgba(108, 60, 233, 0.3)";
+                this.style.transform = "translateY(0)";
+              }, 2000);
+            });
+          });
+
+          // Add padding to make room for the button
+          block.style.paddingTop = "40px";
+          block.appendChild(copyButton);
+        });
+      }
+
+      // Helper function to format Python code
+      function formatPythonCode(code) {
+        // Trim leading/trailing whitespace and ensure proper spacing
+        return code.trim();
+      }
+
+      function showSlide(n) {
+        // Sembunyikan slide sebelumnya
+        slides[currentSlide].classList.remove("active");
+        menuItems[currentSlide].classList.remove("active");
+
+        // Update slide saat ini
+        currentSlide = n;
+
+        // Tampilkan slide baru
+        slides[currentSlide].classList.add("active");
+        menuItems[currentSlide].classList.add("active");
+
+        // Update status tombol navigasi
+        updateNavButtons();
+
+        // Mainkan animasi confetti pada slide terakhir
+        if (currentSlide === slides.length - 1) {
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+          });
+        }
+      }
+
+      function changeSlide(n) {
+        let newSlide = currentSlide + n;
+        if (newSlide >= 0 && newSlide < slides.length) {
+          showSlide(newSlide);
+        }
+      }
+
+      function updateNavButtons() {
+        prevBtn.disabled = currentSlide === 0;
+        nextBtn.disabled = currentSlide === slides.length - 1;
+      }
+
+      // Initialize menu items
+      menuItems.forEach((item, index) => {
+        item.addEventListener("click", () => {
+          showSlide(index);
+        });
+      });
+
+      // Run on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        formatCodeBlocks();
+        updateNavButtons();
+      });
+    </script>
+  </body>
+</html>

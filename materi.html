@@ -1,0 +1,3270 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Petualangan Belajar Python</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@300;400;500;600;700&family=Press+Start+2P&family=Russo+One&family=Orbitron:wght@400;500;700;900&family=Audiowide&family=Exo:wght@300;400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-interactivity@latest/dist/lottie-interactivity.min.js"></script>
+    <style>
+      :root {
+        /* Futuristic Cyberpunk Color Scheme */
+        --primary-dark: #0a0e1f;
+        --secondary-dark: #111936;
+        --accent-neon-blue: #00d9ff;
+        --accent-neon-purple: #9d4edd;
+        --accent-neon-pink: #ff2a6d;
+        --accent-neon-green: #39ff14;
+        --accent-glow: #00d9ff;
+
+        /* Text Colors */
+        --text-primary: #e6f1ff;
+        --text-secondary: #9eb8d9;
+        --text-muted: #6a7a98;
+        --text-highlight: #ffffff;
+
+        /* Terminal & Code Colors */
+        --terminal-bg: #0d1117;
+        --terminal-text: #39ff14;
+
+        /* Status Colors */
+        --success-color: #39ff14;
+        --warning-color: #ffbe0b;
+        --error-color: #ff2a6d;
+
+        /* UI Styling */
+        --border-radius: 6px;
+        --border-radius-lg: 12px;
+        --console-bg: rgba(10, 14, 31, 0.95);
+        --console-text: #39ff14;
+        --console-cursor: #00d9ff;
+        --input-bg: rgba(17, 25, 54, 0.7);
+        --input-border: rgba(0, 217, 255, 0.3);
+
+        /* Gradients & Effects */
+        --neon-gradient: linear-gradient(135deg, #00d9ff, #9d4edd);
+        --cyber-gradient: linear-gradient(45deg, #ff2a6d, #9d4edd, #00d9ff);
+        --hologram-gradient: linear-gradient(
+          to right,
+          transparent,
+          rgba(0, 217, 255, 0.2),
+          transparent
+        );
+        --grid-bg: radial-gradient(circle at top right, #111936, #0a0e1f);
+        --neon-glow: 0 0 20px rgba(0, 217, 255, 0.7);
+        --pink-glow: 0 0 20px rgba(255, 42, 109, 0.7);
+        --green-glow: 0 0 20px rgba(57, 255, 20, 0.7);
+
+        /* Pet Colors */
+        --pet-stage1-color: #00d9ff;
+        --pet-stage2-color: #9d4edd;
+        --pet-stage3-color: #ff2a6d;
+        --pet-stage4-color: #39ff14;
+        --pet-stage5-color: #f1c40f;
+      }
+
+      body {
+        font-family: "Rajdhani", "Inter", sans-serif;
+        background-color: var(--primary-dark);
+        background-image: linear-gradient(
+            90deg,
+            rgba(0, 217, 255, 0.03) 1px,
+            transparent 1px
+          ),
+          linear-gradient(rgba(0, 217, 255, 0.03) 1px, transparent 1px);
+        background-size: 35px 35px;
+        color: var(--text-primary);
+        margin: 0;
+        padding: 0;
+        overflow: auto;
+        line-height: 1.6;
+      } /* Modal Popup Styles */
+      .modal {
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(10, 14, 31, 0.85);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+        pointer-events: none;
+        backdrop-filter: blur(8px);
+      }
+
+      .modal.show {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      .modal-content {
+        background: var(--secondary-dark);
+        margin: auto;
+        padding: 35px;
+        border-radius: var(--border-radius-lg);
+        width: 80%;
+        max-width: 500px;
+        box-shadow: 0 0 30px rgba(0, 217, 255, 0.4);
+        text-align: center;
+        position: relative;
+        transform: scale(0.7);
+        transition: transform 0.3s;
+        border: 1px solid rgba(0, 217, 255, 0.2);
+        overflow: hidden;
+      }
+
+      .modal-content::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: conic-gradient(
+          transparent,
+          rgba(0, 217, 255, 0.1),
+          transparent,
+          transparent
+        );
+        animation: rotate 4s linear infinite;
+        z-index: -1;
+      }
+
+      @keyframes rotate {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .modal.show .modal-content {
+        transform: scale(1);
+      }
+
+      .close-modal {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+        color: var(--text-primary);
+        transition: all 0.3s;
+        z-index: 1100;
+        width: 36px;
+        height: 36px;
+        line-height: 32px;
+        text-align: center;
+        background-color: rgba(255, 42, 109, 0.2);
+        border-radius: 50%;
+        border: 1px solid rgba(255, 42, 109, 0.4);
+        box-shadow: 0 0 10px rgba(255, 42, 109, 0.3);
+      }
+
+      .close-modal:hover {
+        color: var(--text-highlight);
+        background-color: rgba(255, 42, 109, 0.3);
+        transform: scale(1.1);
+        box-shadow: 0 0 15px rgba(255, 42, 109, 0.5);
+      }
+
+      .modal-content h2 {
+        color: var(--accent-neon-blue);
+        margin-top: 0;
+        text-shadow: 0 0 15px rgba(0, 217, 255, 0.7);
+        font-family: "Orbitron", "Press Start 2P", cursive;
+        font-size: 24px;
+        letter-spacing: 2px;
+        line-height: 1.4;
+        text-transform: uppercase;
+        position: relative;
+        display: inline-block;
+      }
+
+      .modal-content h2::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--cyber-gradient);
+        box-shadow: var(--neon-glow);
+      }
+
+      .modal-content p {
+        margin: 20px 0;
+        font-size: 18px;
+        line-height: 1.6;
+        color: var(--text-secondary);
+      }
+
+      .modal-button {
+        background-color: transparent;
+        color: var(--accent-neon-blue);
+        border: 2px solid var(--accent-neon-blue);
+        padding: 12px 30px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 25px;
+        transition: all 0.3s;
+        box-shadow: 0 0 15px rgba(0, 217, 255, 0.4);
+        font-family: "Rajdhani", sans-serif;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        position: relative;
+        overflow: hidden;
+        outline: none;
+      }
+
+      .modal-button::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        border-radius: 4px;
+        background: var(--cyber-gradient);
+        z-index: -2;
+      }
+
+      .modal-button::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--secondary-dark);
+        border-radius: 3px;
+        z-index: -1;
+        transition: all 0.3s;
+      }
+
+      .modal-button:hover {
+        color: var(--text-highlight);
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+        box-shadow: 0 0 25px rgba(0, 217, 255, 0.6);
+        transform: translateY(-3px);
+      }
+
+      .modal-button:hover::after {
+        background-color: transparent;
+        opacity: 0.1;
+      }
+
+      .modal-button:active {
+        transform: translateY(0);
+        box-shadow: 0 0 15px rgba(0, 217, 255, 0.4);
+      }
+
+      .game-container {
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+        background: var(--grid-bg);
+        position: relative;
+      }
+
+      .game-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+            90deg,
+            rgba(0, 217, 255, 0.03) 1px,
+            transparent 1px
+          ),
+          linear-gradient(rgba(0, 217, 255, 0.03) 1px, transparent 1px);
+        background-size: 40px 40px;
+        z-index: 0;
+      }
+      .header {
+        background-color: rgba(17, 25, 54, 0.9);
+        color: var(--text-primary);
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        z-index: 10;
+        border-bottom: 1px solid rgba(0, 217, 255, 0.3);
+        position: relative;
+        backdrop-filter: blur(10px);
+      }
+
+      .header h1 {
+        font-family: "Orbitron", sans-serif;
+        margin: 0;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--text-highlight);
+        text-shadow: 0 0 15px rgba(0, 217, 255, 0.7);
+        position: relative;
+        display: inline-block;
+      }
+
+      .header h1::before,
+      .header h1::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 30px;
+        height: 2px;
+        background: var(--accent-neon-blue);
+        box-shadow: 0 0 10px var(--accent-neon-blue);
+      }
+
+      .header h1::before {
+        left: -40px;
+      }
+
+      .header h1::after {
+        right: -40px;
+      }
+
+      .header::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(
+          to right,
+          transparent,
+          var(--accent-neon-blue),
+          transparent
+        );
+        box-shadow: 0 0 15px var(--accent-neon-blue);
+      }
+
+      .header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--cyber-gradient);
+        opacity: 0.8;
+      }
+
+      .content-area {
+        flex: 1;
+        display: flex;
+        position: relative;
+        overflow: auto;
+        z-index: 1;
+      }
+
+      /* Mobile responsiveness improvements */
+      @media (max-width: 768px) {
+        .content-area {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+          padding: 10px;
+          border-right: none;
+          border-bottom: 1px solid rgba(0, 217, 255, 0.2);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .main-content {
+          padding: 20px 15px;
+          max-height: none;
+        }
+
+        .slide {
+          padding: 25px 20px;
+        }
+
+        code {
+          font-size: 13px;
+          padding: 15px;
+          line-height: 1.4;
+        }
+
+        .menu-item {
+          margin: 8px 0;
+          padding: 10px;
+          font-size: 13px;
+        }
+      }
+
+      .sidebar {
+        width: 250px;
+        background-color: rgba(17, 25, 54, 0.8);
+        padding: 25px;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+        z-index: 5;
+        border-right: 1px solid rgba(0, 217, 255, 0.2);
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .sidebar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            rgba(0, 217, 255, 0.05) 1px,
+            transparent 1px
+          ),
+          linear-gradient(rgba(0, 217, 255, 0.05) 1px, transparent 1px);
+        background-size: 20px 20px;
+        z-index: -1;
+      }
+
+      .sidebar::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 1px;
+        height: 100%;
+        background: linear-gradient(
+          to bottom,
+          transparent,
+          var(--accent-neon-blue),
+          transparent
+        );
+        box-shadow: 0 0 15px var(--accent-neon-blue);
+      }
+
+      /* Pet Styles */
+      .pet-container {
+        background: rgba(10, 14, 31, 0.7);
+        border-radius: var(--border-radius-lg);
+        padding: 15px;
+        margin-bottom: 25px;
+        border: 1px solid rgba(0, 217, 255, 0.3);
+        box-shadow: 0 0 15px rgba(0, 217, 255, 0.2);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .pet-container::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: conic-gradient(
+          transparent,
+          rgba(0, 217, 255, 0.05),
+          transparent,
+          transparent
+        );
+        animation: rotate 8s linear infinite;
+        z-index: -1;
+      }
+
+      .pet-avatar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px;
+        height: 100px;
+        position: relative;
+      }
+
+      .pet {
+        width: 80px;
+        height: 80px;
+        position: relative;
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        transform-origin: center bottom;
+        animation: petFloat 3s ease-in-out infinite;
+      }
+
+      @keyframes petFloat {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .pet::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        filter: drop-shadow(0 0 8px currentColor);
+      }
+
+      .pet-stage-1 {
+        color: var(--pet-stage1-color);
+      }
+
+      .pet-stage-1::before {
+        content: "🥚";
+        font-size: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-shadow: 0 0 10px var(--pet-stage1-color);
+      }
+
+      .pet-stage-2 {
+        color: var(--pet-stage2-color);
+      }
+
+      .pet-stage-2::before {
+        content: "🐣";
+        font-size: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-shadow: 0 0 10px var(--pet-stage2-color);
+      }
+
+      .pet-stage-3 {
+        color: var(--pet-stage3-color);
+      }
+
+      .pet-stage-3::before {
+        content: "🐥";
+        font-size: 65px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-shadow: 0 0 10px var(--pet-stage3-color);
+      }
+
+      .pet-stage-4 {
+        color: var(--pet-stage4-color);
+      }
+
+      .pet-stage-4::before {
+        content: "🦜";
+        font-size: 70px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-shadow: 0 0 10px var(--pet-stage4-color);
+      }
+
+      .pet-stage-5 {
+        color: var(--pet-stage5-color);
+      }
+
+      .pet-stage-5::before {
+        content: "🐉";
+        font-size: 70px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-shadow: 0 0 15px var(--pet-stage5-color);
+        animation: dragonPulse 2s ease-in-out infinite alternate;
+      }
+
+      @keyframes dragonPulse {
+        0% {
+          filter: drop-shadow(0 0 8px var(--pet-stage5-color)) brightness(1);
+        }
+        100% {
+          filter: drop-shadow(0 0 15px var(--pet-stage5-color)) brightness(1.3);
+        }
+      }
+
+      .pet-info {
+        text-align: center;
+      }
+
+      .pet-name {
+        font-family: "Orbitron", sans-serif;
+        font-weight: 700;
+        font-size: 18px;
+        margin-bottom: 5px;
+        background: var(--cyber-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 5px rgba(0, 217, 255, 0.5);
+      }
+
+      .pet-level {
+        font-size: 14px;
+        margin-bottom: 8px;
+        color: var(--text-secondary);
+      }
+
+      .pet-xp-container {
+        margin-top: 5px;
+      }
+
+      .pet-xp-bar {
+        height: 6px;
+        background-color: rgba(157, 78, 221, 0.2);
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 5px;
+      }
+
+      .pet-xp-progress {
+        height: 100%;
+        background: var(--neon-gradient);
+        width: 0%;
+        transition: width 0.5s ease-out;
+        box-shadow: 0 0 10px rgba(0, 217, 255, 0.7);
+      }
+
+      .pet-xp-text {
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+
+      .pet-evolution {
+        animation: petEvolution 1s ease-in-out;
+        position: relative;
+      }
+
+      @keyframes petEvolution {
+        0% {
+          transform: scale(1) rotate(0);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.5) rotate(10deg);
+          opacity: 0.7;
+        }
+        75% {
+          transform: scale(0.8) rotate(-5deg);
+          opacity: 0.9;
+        }
+        100% {
+          transform: scale(1) rotate(0);
+          opacity: 1;
+        }
+      }
+
+      .evolution-particles {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .evolution-particle {
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        background: var(--accent-neon-blue);
+        border-radius: 50%;
+        animation: particleFade 1.5s ease-out forwards;
+      }
+
+      @keyframes particleFade {
+        0% {
+          opacity: 1;
+          transform: translate(0, 0) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(var(--tx), var(--ty)) scale(0);
+        }
+      }
+
+      .menu-item {
+        padding: 14px 18px;
+        margin: 14px 0;
+        background-color: rgba(0, 217, 255, 0.05);
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-family: "Rajdhani", sans-serif;
+        font-weight: 600;
+        font-size: 15px;
+        letter-spacing: 1px;
+        border: 1px solid rgba(0, 217, 255, 0.15);
+        position: relative;
+        overflow: hidden;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .menu-item::before {
+        content: ">";
+        position: absolute;
+        left: 10px;
+        opacity: 0;
+        transition: all 0.3s;
+        color: var (--accent-neon-blue);
+        font-size: 14px;
+      }
+
+      .menu-item:hover {
+        background-color: rgba(0, 217, 255, 0.1);
+        transform: translateY(-3px) translateX(5px);
+        box-shadow: 0 7px 20px rgba(0, 0, 0, 0.2);
+        border-color: var(--accent-neon-blue);
+        color: var(--text-highlight);
+        padding-left: 25px;
+      }
+
+      .menu-item:hover::before {
+        opacity: 1;
+        left: 10px;
+      }
+
+      .menu-item:active {
+        transform: translateY(0) translateX(5px);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .menu-item.active {
+        background-color: rgba(0, 217, 255, 0.15);
+        border-color: var(--accent-neon-blue);
+        color: var(--accent-neon-blue);
+        position: relative;
+        box-shadow: 0 0 15px rgba(0, 217, 255, 0.3);
+        padding-left: 25px;
+      }
+
+      .menu-item.active::before {
+        opacity: 1;
+        left: 10px;
+      }
+
+      .menu-item.active::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--accent-neon-blue);
+        box-shadow: 0 0 10px var(--accent-neon-blue);
+      }
+      .main-content {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+        height: 100%;
+        max-height: calc(100vh - 200px);
+        background: var(--primary-dark);
+        position: relative;
+        z-index: 1;
+      }
+
+      .main-content::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(
+            circle at 15% 50%,
+            rgba(157, 78, 221, 0.03) 0%,
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 85% 30%,
+            rgba(0, 217, 255, 0.03) 0%,
+            transparent 30%
+          );
+        z-index: -1;
+      }
+      .slide {
+        display: none;
+        background-color: var(--secondary-dark);
+        padding: 35px;
+        border-radius: var(--border-radius);
+        margin-bottom: 30px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        max-width: 800px;
+        margin: 0 auto 30px auto;
+        overflow: auto;
+        border: 1px solid rgba(0, 217, 255, 0.15);
+        position: relative;
+        backdrop-filter: blur(5px);
+      }
+
+      .slide::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--cyber-gradient);
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+      }
+
+      .slide::after {
+        content: "";
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 8px;
+        height: 8px;
+        background: var(--accent-neon-green);
+        border-radius: 50%;
+        box-shadow: 0 0 10px var (--accent-neon-green);
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          opacity: 0.6;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.1);
+        }
+        100% {
+          opacity: 0.6;
+          transform: scale(1);
+        }
+      }
+      .slide p {
+        line-height: 1.8;
+        font-size: 16px;
+        color: var(--text-secondary);
+        letter-spacing: 0.3px;
+      }
+
+      .slide.active {
+        display: block;
+        animation: slideIn 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .slide h2 {
+        color: var(--accent-neon-blue);
+        margin-top: 0;
+        font-family: "Orbitron", sans-serif;
+        font-weight: 700;
+        font-size: 24px;
+        letter-spacing: 2px;
+        margin-bottom: 30px;
+        display: inline-block;
+        position: relative;
+        text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+        line-height: 1.4;
+        text-transform: uppercase;
+      }
+
+      .slide h2::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 50%;
+        height: 2px;
+        background: var (--cyber-gradient);
+        box-shadow: var(--neon-glow);
+      }
+
+      .slide h3 {
+        font-family: "Exo", sans-serif;
+        font-weight: 600;
+        font-size: 20px;
+        color: var(--accent-neon-purple);
+        margin-top: 30px;
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+        text-shadow: 0 0 8px rgba(157, 78, 221, 0.4);
+        line-height: 1.5;
+        position: relative;
+        display: inline-block;
+      }
+
+      .slide h3::before {
+        content: "//";
+        position: absolute;
+        left: -25px;
+        color: var(--accent-neon-green);
+        opacity: 0.7;
+        font-size: 18px;
+        text-shadow: 0 0 8px rgba(57, 255, 20, 0.4);
+      }
+
+      .slide h4 {
+        font-family: "Rajdhani", sans-serif;
+        font-weight: 600;
+        font-size: 18px;
+        color: var(--accent-neon-pink);
+        margin-top: 25px;
+        margin-bottom: 12px;
+        letter-spacing: 0.5px;
+        text-shadow: 0 0 5px rgba(255, 42, 109, 0.3);
+        text-transform: uppercase;
+      }
+      .footer {
+        background-color: var(--secondary-dark);
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+        border-top: 1px solid rgba(67, 97, 238, 0.1);
+        font-size: 14px;
+        color: var(--text-muted);
+      }
+      code {
+        background-color: var(--terminal-bg);
+        padding: 25px 20px;
+        border-radius: var(--border-radius);
+        font-family: "JetBrains Mono", monospace;
+        display: block;
+        margin: 25px 0;
+        white-space: pre;
+        color: var(--terminal-text);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        overflow-x: auto;
+        font-size: 14px;
+        line-height: 1.6;
+        border: 1px solid rgba(57, 255, 20, 0.1);
+        position: relative;
+        text-shadow: 0 0 5px rgba(57, 255, 20, 0.3);
+      }
+
+      code::after {
+        content: "";
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        width: 8px;
+        height: 16px;
+        background-color: var(--accent-neon-green);
+        animation: blink 1s infinite;
+        box-shadow: 0 0 8px rgba(57, 255, 20, 0.7);
+      }
+
+      /* Enhanced blinking cursor animation */
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+      .trophy {
+        font-size: 40px;
+        margin: 0 10px;
+        cursor: pointer;
+        transition: transform 0.3s, text-shadow 0.3s;
+        color: var(--accent-neon-blue);
+        text-shadow: 0 0 15px rgba(0, 217, 255, 0.4);
+      }
+
+      .trophy:hover {
+        transform: scale(1.2);
+        text-shadow: 0 0 20px rgba(0, 217, 255, 0.8);
+        color: var(--text-highlight);
+      }
+
+      .quiz-container {
+        margin-top: 40px;
+        background: linear-gradient(
+          145deg,
+          rgba(0, 217, 255, 0.05),
+          rgba(157, 78, 221, 0.05)
+        );
+        padding: 30px;
+        border-radius: var(--border-radius);
+        border: 1px solid rgba(0, 217, 255, 0.15);
+        position: relative;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+
+      .quiz-container::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: conic-gradient(
+          transparent,
+          rgba(157, 78, 221, 0.05),
+          transparent,
+          transparent
+        );
+        animation: rotate 8s linear infinite;
+        z-index: -1;
+      }
+
+      .quiz-container::after {
+        content: "CHALLENGE";
+        position: absolute;
+        top: -13px;
+        right: 15px;
+        background: var(--cyber-gradient);
+        color: var(--text-highlight);
+        font-size: 12px;
+        padding: 4px 15px;
+        border-radius: 20px;
+        font-family: "Orbitron", sans-serif;
+        font-weight: 600;
+        letter-spacing: 1px;
+        box-shadow: 0 0 15px rgba(0, 217, 255, 0.4);
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+      }
+      .quiz-container h3 {
+        margin-top: 0;
+        color: var(--accent-neon-blue);
+        font-family: "Orbitron", sans-serif;
+        font-size: 18px;
+        margin-bottom: 20px;
+        text-shadow: 0 0 8px rgba(0, 217, 255, 0.4);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        position: relative;
+        display: inline-block;
+      }
+
+      .quiz-container h3::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--accent-neon-blue);
+        box-shadow: 0 0 8px var(--accent-neon-blue);
+      }
+
+      .quiz-option {
+        padding: 16px 20px;
+        margin: 12px 0;
+        background-color: rgba(17, 25, 54, 0.7);
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: all 0.3s;
+        border: 1px solid rgba(0, 217, 255, 0.1);
+        position: relative;
+        overflow: hidden;
+        color: var(--text-secondary);
+        font-family: "Rajdhani", sans-serif;
+        font-weight: 500;
+        font-size: 16px;
+        letter-spacing: 0.5px;
+      }
+
+      .quiz-option:hover {
+        background-color: rgba(0, 217, 255, 0.1);
+        transform: translateY(-3px) translateX(5px);
+        border-color: var(--accent-neon-blue);
+        box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+        color: var(--text-highlight);
+      }
+      .quiz-option::before {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(0, 217, 255, 0.1),
+          transparent
+        );
+        top: 0;
+        left: -100%;
+        transition: 0.5s;
+      }
+
+      .quiz-option:hover::before {
+        left: 100%;
+        width: 100%;
+      }
+
+      .quiz-option::after {
+        content: ">";
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--accent-neon-blue);
+        opacity: 0;
+        transition: all 0.3s;
+      }
+
+      .quiz-option:hover::after {
+        opacity: 1;
+        right: 15px;
+      }
+      .achievement {
+        position: fixed;
+        bottom: 70px;
+        right: -300px;
+        background: var(--secondary-dark);
+        color: var(--text-highlight);
+        padding: 20px;
+        border-radius: var(--border-radius);
+        box-shadow: 0 0 30px rgba(0, 217, 255, 0.4);
+        transition: right 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        z-index: 100;
+        border: 1px solid rgba(0, 217, 255, 0.3);
+        min-width: 250px;
+        backdrop-filter: blur(10px);
+        overflow: hidden;
+      }
+
+      .achievement::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--cyber-gradient);
+        box-shadow: 0 0 15px var(--accent-neon-blue);
+      }
+
+      .achievement::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at bottom right,
+          rgba(0, 217, 255, 0.1),
+          transparent 70%
+        );
+        z-index: -1;
+      }
+      .achievement.show {
+        right: 20px;
+        animation: achievement-pulse 2s infinite;
+      }
+
+      @keyframes achievement-pulse {
+        0% {
+          box-shadow: 0 0 30px rgba(0, 217, 255, 0.4);
+        }
+        50% {
+          box-shadow: 0 0 40px rgba(0, 217, 255, 0.7);
+        }
+        100% {
+          box-shadow: 0 0 30px rgba(0, 217, 255, 0.4);
+        }
+      }
+
+      .achievement h3 {
+        font-family: "Orbitron", sans-serif;
+        font-weight: 600;
+        font-size: 16px;
+        letter-spacing: 1px;
+        margin-top: 0;
+        margin-bottom: 10px;
+        text-shadow: 0 0 8px rgba(0, 217, 255, 0.4);
+        color: var(--accent-neon-blue);
+        text-transform: uppercase;
+      }
+
+      /* Interactive Code Playground */
+      .code-playground {
+        background-color: var(--terminal-bg);
+        border-radius: var(--border-radius);
+        padding: 25px;
+        margin: 30px 0;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(57, 255, 20, 0.15);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .code-playground::before {
+        content: "INTERACTIVE TERMINAL";
+        position: absolute;
+        top: -12px;
+        left: 20px;
+        background-color: var(--terminal-bg);
+        color: var(--accent-neon-green);
+        padding: 3px 15px;
+        font-size: 12px;
+        border-radius: 15px;
+        font-family: "Orbitron", sans-serif;
+        font-weight: 600;
+        letter-spacing: 1px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(57, 255, 20, 0.3);
+        text-shadow: 0 0 5px rgba(57, 255, 20, 0.5);
+      }
+
+      .code-editor {
+        width: 100%;
+        background-color: var(--terminal-bg);
+        color: var(--terminal-text);
+        font-family: "JetBrains Mono", monospace;
+        padding: 15px;
+        border: 1px solid rgba(57, 255, 20, 0.2);
+        border-radius: 8px;
+        resize: vertical;
+        min-height: 120px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        line-height: 1.5;
+        outline: none;
+        transition: all 0.3s;
+      }
+
+      .code-editor:focus {
+        border-color: var(--accent-cyan);
+        box-shadow: 0 0 0 2px rgba(76, 201, 240, 0.2);
+      }
+
+      .code-output {
+        background-color: var(--terminal-bg);
+        color: var(--terminal-text);
+        font-family: "JetBrains Mono", monospace;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+        min-height: 60px;
+        font-size: 14px;
+        line-height: 1.6;
+        border: 1px solid rgba(57, 255, 20, 0.15);
+        position: relative;
+        text-shadow: 0 0 5px rgba(57, 255, 20, 0.3);
+        overflow: auto;
+      }
+
+      .code-output::before {
+        content: "OUTPUT";
+        position: absolute;
+        top: -12px;
+        right: 15px;
+        background-color: var(--terminal-bg);
+        color: var(--accent-neon-green);
+        padding: 3px 12px;
+        font-size: 12px;
+        border-radius: 15px;
+        font-family: "Orbitron", sans-serif;
+        font-weight: 500;
+        letter-spacing: 1px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(57, 255, 20, 0.3);
+      }
+
+      .run-button {
+        background-color: transparent;
+        color: var(--accent-neon-green);
+        border: 2px solid var(--accent-neon-green);
+        padding: 12px 30px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        font-family: "Rajdhani", sans-serif;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        transition: all 0.3s;
+        margin-top: 20px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
+        text-shadow: 0 0 5px rgba(57, 255, 20, 0.5);
+      }
+
+      .run-button::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        border-radius: 4px;
+        background: var(--accent-neon-green);
+        z-index: -2;
+        opacity: 0.3;
+      }
+
+      .run-button::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--terminal-bg);
+        border-radius: 3px;
+        z-index: -1;
+        transition: all 0.3s;
+      }
+
+      .run-button:hover {
+        color: var(--text-highlight);
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+        box-shadow: 0 0 25px rgba(57, 255, 20, 0.6);
+        transform: translateY(-3px);
+      }
+
+      .run-button:hover::after {
+        background-color: transparent;
+        opacity: 0.1;
+      }
+
+      .run-button:active {
+        transform: translateY(0);
+        box-shadow: 0 0 15px rgba(57, 255, 20, 0.4);
+      }
+
+      .badge-system {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin: 30px 0;
+        justify-content: center;
+      }
+
+      .badge {
+        width: 80px;
+        height: 80px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(17, 25, 54, 0.7);
+        border-radius: 10px;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(0, 217, 255, 0.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .badge::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--cyber-gradient);
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .badge:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 217, 255, 0.2);
+        border-color: var(--accent-neon-blue);
+      }
+
+      .badge:hover::before {
+        opacity: 1;
+      }
+
+      .badge i {
+        font-size: 28px;
+        margin-bottom: 8px;
+        color: var(--text-muted);
+        transition: all 0.3s;
+      }
+
+      .badge:hover i {
+        color: var(--accent-neon-blue);
+        text-shadow: 0 0 10px var(--accent-neon-blue);
+        transform: scale(1.1);
+      }
+
+      .badge span {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-family: "Rajdhani", sans-serif;
+      }
+
+      .badge.earned {
+        opacity: 1;
+        border-color: var(--accent-neon-green);
+        box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+        background-color: rgba(17, 25, 54, 0.9);
+      }
+
+      .badge.earned::before {
+        opacity: 1;
+        background: var(--accent-neon-green);
+        height: 3px;
+        box-shadow: 0 0 10px var(--accent-neon-green);
+      }
+
+      .badge-tooltip {
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(17, 25, 54, 0.95);
+        color: var(--text-primary);
+        padding: 10px 15px;
+        border-radius: 5px;
+        width: 150px;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        pointer-events: none;
+        z-index: 100;
+        border: 1px solid rgba(0, 217, 255, 0.2);
+      }
+
+      .badge:hover .badge-tooltip {
+        opacity: 1;
+        visibility: visible;
+        bottom: calc(100% + 15px);
+      }
+
+      .points-display {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(17, 25, 54, 0.9);
+        color: var(--accent-neon-blue);
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 16px;
+        box-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
+        z-index: 100;
+        border: 1px solid rgba(0, 217, 255, 0.3);
+        font-family: "Orbitron", sans-serif;
+        letter-spacing: 1px;
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        text-transform: uppercase;
+      }
+
+      .points-display::before {
+        content: "";
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        background-color: var(--accent-neon-blue);
+        border-radius: 50%;
+        margin-right: 10px;
+        box-shadow: 0 0 10px var(--accent-neon-blue);
+        animation: pulse 1.5s infinite;
+      }
+
+      .typing-exercise {
+        margin-top: 40px;
+        background: linear-gradient(
+          145deg,
+          rgba(0, 217, 255, 0.03),
+          rgba(157, 78, 221, 0.03)
+        );
+        padding: 25px;
+        border-radius: var(--border-radius);
+        border: 1px solid rgba(0, 217, 255, 0.1);
+        position: relative;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+
+      .typing-exercise h4 {
+        margin-top: 0;
+        color: var(--accent-neon-pink);
+        font-family: "Orbitron", sans-serif;
+        font-size: 18px;
+        margin-bottom: 20px;
+        text-shadow: 0 0 8px rgba(255, 42, 109, 0.4);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      .typing-exercise .target-text {
+        background-color: var(--terminal-bg);
+        padding: 20px;
+        border-radius: 8px;
+        font-family: "JetBrains Mono", monospace;
+        margin: 20px 0;
+        color: var(--terminal-text);
+        position: relative;
+        border: 1px solid rgba(57, 255, 20, 0.1);
+        text-shadow: 0 0 5px rgba(57, 255, 20, 0.3);
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        line-height: 1.6;
+      }
+
+      .typing-exercise .input-area {
+        width: 100%;
+        background-color: var(--terminal-bg);
+        color: var (--terminal-text);
+        font-family: "JetBrains Mono", monospace;
+        padding: 20px;
+        border: 1px solid rgba(57, 255, 20, 0.2);
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        line-height: 1.6;
+        outline: none;
+        resize: vertical;
+        transition: all 0.3s;
+        text-shadow: 0 0 5px rgba(57, 255, 20, 0.3);
+      }
+
+      .typing-exercise .input-area:focus {
+        border-color: var(--accent-neon-green);
+        box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
+      }
+
+      .typing-exercise .feedback {
+        color: var(--text-secondary);
+        margin-top: 15px;
+        font-size: 16px;
+        font-family: "Rajdhani", sans-serif;
+        letter-spacing: 0.5px;
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 5px 20px rgba(76, 201, 240, 0.4);
+        }
+        50% {
+          box-shadow: 0 5px 30px rgba(76, 201, 240, 0.7);
+        }
+        100% {
+          box-shadow: 0 5px 20px rgba(76, 201, 240, 0.4);
+        }
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .progress-bar {
+        height: 6px;
+        background-color: rgba(67, 97, 238, 0.1);
+        border-radius: 3px;
+        margin: 25px 0;
+        overflow: hidden;
+        position: relative;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+      .progress {
+        height: 100%;
+        background: linear-gradient(
+          to right,
+          var(--accent-blue),
+          var(--accent-cyan)
+        );
+        border-radius: 3px;
+        transition: width 0.5s ease;
+        position: relative;
+      }
+      .progress::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        animation: shimmer 1.5s infinite;
+      }
+      @keyframes shimmer {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+      .nav-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 40px;
+      }
+
+      .nav-button {
+        background-color: transparent;
+        color: var(--accent-neon-blue);
+        border: 2px solid var(--accent-neon-blue);
+        padding: 12px 30px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.3s;
+        font-family: "Rajdhani", sans-serif;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        position: relative;
+        overflow: hidden;
+        outline: none;
+        box-shadow: 0 0 15px rgba(0, 217, 255, 0.3);
+      }
+
+      .nav-button::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        border-radius: 4px;
+        background: var(--cyber-gradient);
+        z-index: -2;
+        opacity: 0.3;
+      }
+
+      .nav-button::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--secondary-dark);
+        border-radius: 3px;
+        z-index: -1;
+        transition: all 0.3s;
+      }
+
+      .nav-button:hover {
+        color: var(--text-highlight);
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+        box-shadow: 0 0 25px rgba(0, 217, 255, 0.6);
+        transform: translateY(-3px);
+      }
+
+      .nav-button:hover::after {
+        background-color: transparent;
+        opacity: 0.1;
+      }
+
+      .nav-button:active {
+        transform: translateY(0);
+        box-shadow: 0 0 15px rgba(0, 217, 255, 0.4);
+      }
+
+      .nav-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        border-color: var(--text-muted);
+        color: var(--text-muted);
+        box-shadow: none;
+      }
+
+      .nav-button:disabled:hover {
+        transform: none;
+        color: var(--text-muted);
+        box-shadow: none;
+      }
+      .example-container {
+        background-color: rgba(17, 25, 54, 0.7);
+        padding: 25px;
+        border-radius: var(--border-radius);
+        margin: 30px 0;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(157, 78, 221, 0.15);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .example-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--accent-neon-purple);
+        box-shadow: 0 0 15px rgba(157, 78, 221, 0.7);
+      }
+
+      .example-container h3 {
+        margin-top: 0;
+        color: var(--accent-neon-purple);
+        font-family: "Exo", sans-serif;
+        font-size: 18px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-shadow: 0 0 8px rgba(157, 78, 221, 0.5);
+        margin-bottom: 20px;
+        font-weight: 700;
+      }
+
+      .example-container ul {
+        list-style-type: none;
+        padding-left: 5px;
+      }
+
+      .example-container ul li {
+        margin-bottom: 12px;
+        position: relative;
+        padding-left: 25px;
+        line-height: 1.5;
+      }
+
+      .example-container ul li::before {
+        content: ">";
+        position: absolute;
+        left: 0;
+        color: var(--accent-neon-purple);
+        opacity: 0.8;
+        font-family: monospace;
+        font-weight: bold;
+      }
+
+      .tip-box {
+        background-color: rgba(0, 217, 255, 0.04);
+        border-left: 3px solid var(--accent-neon-blue);
+        padding: 20px 25px;
+        margin: 30px 0;
+        border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        position: relative;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+
+      .tip-box::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          to right,
+          rgba(0, 217, 255, 0.05),
+          transparent
+        );
+        pointer-events: none;
+      }
+
+      .tip-box p {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.7;
+      }
+
+      .tip-box strong {
+        color: var(--accent-neon-blue);
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        font-family: "Rajdhani", sans-serif;
+        text-shadow: 0 0 5px rgba(0, 217, 255, 0.4);
+      }
+
+      .next-topic-btn {
+        padding: 10px 15px;
+        margin: 10px;
+        background-color: #2980b9;
+        border: none;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-family: "Montserrat", sans-serif;
+        font-weight: 600;
+        box-shadow: 0 4px 0 #1c5a85;
+      }
+
+      .next-topic-btn:hover {
+        background-color: #3498db;
+        transform: translateY(-3px);
+        box-shadow: 0 7px 0 #1c5a85;
+      }
+
+      .next-topic-btn:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 0 #1c5a85;
+      }
+
+      .code-playground h3 {
+        font-family: "Press Start 2P", cursive;
+        font-weight: 400;
+        font-size: 16px;
+        letter-spacing: 1px;
+        margin-top: 0;
+        margin-bottom: 15px;
+        color: var(--accent-cyan);
+        text-shadow: 0 0 8px rgba(76, 201, 240, 0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="game-container">
+      <header class="header">
+        <h1>Petualangan Belajar Python</h1>
+      </header>
+
+      <div id="points-display" class="points-display">
+        <span id="points-value">0</span> XP
+      </div>
+
+      <div class="content-area">
+        <div class="sidebar">
+          <div class="pet-container">
+            <div class="pet-avatar">
+              <div id="pet" class="pet pet-stage-1"></div>
+            </div>
+            <div class="pet-info">
+              <div class="pet-name">Py-Bot</div>
+              <div class="pet-level">Level: <span id="pet-level">1</span></div>
+              <div class="pet-xp-container">
+                <div class="pet-xp-bar">
+                  <div id="pet-xp-progress" class="pet-xp-progress"></div>
+                </div>
+                <div class="pet-xp-text">
+                  <span id="pet-xp-current">0</span>/<span id="pet-xp-next"
+                    >100</span
+                  >
+                  XP
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="menu-item active" data-slide="intro">Intro Python</div>
+          <div class="menu-item" data-slide="variables">
+            Variabel & Tipe Data
+          </div>
+          <div class="menu-item" data-slide="io">I/O & Manipulasi String</div>
+          <div class="menu-item" data-slide="conditional">
+            Logika Kondisional
+          </div>
+          <div class="menu-item" data-slide="loop">Perulangan</div>
+          <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+          </div>
+        </div>
+
+        <div class="main-content">
+          <div class="slide active" id="intro">
+            <h2>Pengenalan Python & Sintaks Dasar</h2>
+            <p>
+              Halo Petualang! Selamat datang di dunia Python, bahasa pemrograman
+              yang super keren dan mudah dipelajari!
+            </p>
+
+            <p>
+              Python itu ibarat pisau tentara Swiss bagi para programmer -
+              serbaguna dan bisa dipakai untuk ngapain aja! Mulai dari bikin
+              website, analisis data, AI, game, sampai otomatisasi tugas
+              sehari-hari!
+            </p>
+
+            <div class="example-container">
+              <h3>Kenapa Python Asyik?</h3>
+              <ul>
+                <li>
+                  Sintaksnya bersih dan mudah dibaca, mirip bahasa manusia
+                </li>
+                <li>Tidak perlu titik koma (;) di akhir baris</li>
+                <li>
+                  Menggunakan indentasi (spasi) untuk mengelompokkan blok kode
+                </li>
+                <li>Komunitas super besar dan library yang melimpah</li>
+              </ul>
+            </div>
+
+            <h3>Hello World di Python:</h3>
+            <code>print("Halo Dunia Python!")</code>
+
+            <p>
+              Baris kode di atas cukup untuk menampilkan teks "Halo Dunia
+              Python!" di layar. Bandingkan dengan Java yang butuh banyak baris
+              kode cuma untuk menampilkan satu kalimat!
+            </p>
+
+            <div class="tip-box">
+              <p>
+                <strong>Tips:</strong> Python sangat peduli dengan indentasi
+                (spasi di awal baris). Indentasi digunakan untuk menunjukkan
+                blok kode yang berhubungan. Menggunakan 4 spasi adalah standar
+                yang direkomendasikan.
+              </p>
+            </div>
+
+            <div class="quiz-container">
+              <h3>Mini Quiz:</h3>
+              <p>Manakah yang merupakan fitur khas Python?</p>
+              <div class="quiz-option" data-correct="true">
+                Menggunakan indentasi untuk menandakan blok kode
+              </div>
+              <div class="quiz-option" data-correct="false">
+                Menggunakan kurung kurawal {} untuk menandakan blok kode
+              </div>
+              <div class="quiz-option" data-correct="false">
+                Memerlukan titik koma di akhir baris
+              </div>
+            </div>
+
+            <div class="nav-buttons">
+              <button class="nav-button" id="prev-button" disabled>
+                Sebelumnya
+              </button>
+              <button class="nav-button" id="next-button">Selanjutnya</button>
+            </div>
+          </div>
+
+          <div class="slide" id="variables">
+            <h2>Variabel & Tipe Data</h2>
+            <p>
+              Variabel di Python itu seperti kotak ajaib yang bisa menyimpan
+              berbagai macam barang. Kamu tinggal kasih nama ke kotak itu, dan
+              isinya bisa kamu ganti kapan saja!
+            </p>
+
+            <h3>Membuat Variabel:</h3>
+            <code>nama = "Jasmine" <br />umur = 26 <br />jomblo = True</code>
+
+            <p>
+              Di Python, kamu tidak perlu mendeklarasikan tipe data terlebih
+              dahulu. Python otomatis mengenali tipe data berdasarkan nilai yang
+              kamu berikan!
+            </p>
+
+            <div class="example-container">
+              <h3>Tipe Data Dasar di Python:</h3>
+              <ul>
+                <li>
+                  <strong>String (str)</strong>: Teks - dibuat dengan tanda
+                  kutip. Contoh: <code>"Halo"</code> atau <code>'Halo'</code>
+                </li>
+                <li>
+                  <strong>Integer (int)</strong>: Bilangan bulat. Contoh:
+                  <code>42</code>, <code>-7</code>
+                </li>
+                <li>
+                  <strong>Float</strong>: Bilangan desimal. Contoh:
+                  <code>3.14</code>, <code>-0.001</code>
+                </li>
+                <li>
+                  <strong>Boolean (bool)</strong>: Nilai kebenaran -
+                  <code>True</code> atau <code>False</code>
+                </li>
+                <li>
+                  <strong>None</strong>: Nilai kosong atau tidak ada (mirip NULL
+                  di bahasa lain)
+                </li>
+              </ul>
+            </div>
+
+            <p>Mengetahui tipe data variabel:</p>
+            <code
+              >nama = "Budi" print(type(nama)) # Akan menampilkan: <class
+              'str'></code
+            >
+
+            <p>
+              Bayangkan variabel seperti label nama pada gelas. Kamu bisa isi
+              gelas itu dengan teh, kopi, atau jus. Isinya bisa berubah-ubah,
+              tapi labelnya tetap!
+            </p>
+
+            <div class="tip-box">
+              <p>
+                <strong>Tips:</strong> Nama variabel di Python tidak boleh
+                dimulai dengan angka dan tidak boleh mengandung spasi. Gunakan
+                huruf kecil dan underscore untuk memisahkan kata (snake_case)
+                adalah konvensi yang umum di Python, contoh:
+                <code>nama_lengkap</code>, <code>tanggal_lahir</code>.
+              </p>
+            </div>
+
+            <div class="quiz-container">
+              <h3>Mini Quiz:</h3>
+              <p>
+                Kode manakah yang benar untuk membuat variabel bertipe float?
+              </p>
+              <div class="quiz-option" data-correct="false">berat == 65.5</div>
+              <div class="quiz-option" data-correct="true">berat = 65.5</div>
+              <div class="quiz-option" data-correct="false">
+                float berat = 65.5
+              </div>
+            </div>
+
+            <div class="nav-buttons">
+              <button class="nav-button" id="prev-button">Sebelumnya</button>
+              <button class="nav-button" id="next-button">Selanjutnya</button>
+            </div>
+          </div>
+
+          <div class="slide" id="io">
+            <h2>Input/Output & Manipulasi String</h2>
+            <p>
+              Mari belajar bagaimana caranya berkomunikasi dengan program Python
+              kita!
+            </p>
+
+            <h3>Output - Menampilkan Data:</h3>
+            <code
+              >print("Selamat datang di toko kami!") <br />nama = "Dina"
+              <br />print("Halo,", nama, "! Apa kabar?")
+            </code>
+
+            <p>
+              Fungsi <code>print()</code> adalah cara paling mudah untuk
+              menampilkan output. Format string (f-string) memudahkan kita
+              menyisipkan variabel dalam teks.
+            </p>
+
+            <h3>Input - Menerima Data dari Pengguna:</h3>
+            <code
+              >nama = input("Masukkan nama Anda: ") print(f"Halo {nama}, selamat
+              datang!")</code
+            >
+
+            <p>
+              Fungsi <code>input()</code> akan menampilkan pesan dan menunggu
+              pengguna mengetik jawaban, kemudian menyimpannya sebagai string.
+            </p>
+
+            <h3>Manipulasi String:</h3>
+            <p>
+              String di Python seperti kalung manik-manik, di mana setiap
+              karakter adalah manik yang bisa diakses satu per satu. Mari kita
+              pelajari cara-cara memanipulasi string di Python.
+            </p>
+
+            <h4>1. Concatenation (Penggabungan String)</h4>
+            <p>
+              Di Python, kita bisa menggabungkan string dengan menggunakan
+              operator <code>+</code>:
+            </p>
+            <code
+              >nama_depan = "Python" nama_belakang = "Programming" nama_lengkap
+              = nama_depan + " " + nama_belakang print(nama_lengkap) # Output:
+              Python Programming</code
+            >
+            >
+
+            <h4>2. len() - Menghitung Panjang String</h4>
+            <p>
+              Fungsi <code>len()</code> digunakan untuk menghitung jumlah
+              karakter dalam string:
+            </p>
+            <code
+              >teks = "Python Keren" panjang = len(teks) print(panjang) #
+              Output: 12</code
+            >
+            >
+
+            <h4>3. upper() - Mengubah ke Huruf Kapital</h4>
+            <p>
+              Method <code>upper()</code> mengubah semua karakter string menjadi
+              huruf besar:
+            </p>
+            <code
+              >teks = "Python adalah bahasa pemrograman" kapital = teks.upper()
+              print(kapital) # Output: PYTHON ADALAH BAHASA PEMROGRAMAN</code
+            >
+            >
+
+            <h4>4. lower() - Mengubah ke Huruf Kecil</h4>
+            <p>
+              Method <code>lower()</code> mengubah semua karakter string menjadi
+              huruf kecil:
+            </p>
+            <code
+              >teks = "PYTHON ADALAH BAHASA PEMROGRAMAN" kecil = teks.lower()
+              print(kecil) # Output: python adalah bahasa pemrograman</code
+            >
+            >
+
+            <h4>5. strip() - Menghapus Spasi di Awal dan Akhir</h4>
+            <p>
+              Method <code>strip()</code> menghapus spasi yang tidak diinginkan
+              di awal dan akhir string:
+            </p>
+            <code
+              >teks = " Python Keren " bersih = teks.strip() print(bersih) #
+              Output: "Python Keren"</code
+            >
+            >
+
+            <h4>6. replace() - Mengganti Bagian String</h4>
+            <p>
+              Method <code>replace()</code> mengganti bagian teks dalam string:
+            </p>
+            <code
+              >teks = "Saya suka Java" ganti = teks.replace("Java", "Python")
+              print(ganti) # Output: "Saya suka Python"</code
+            >
+
+            <h4>7. f-string - String Interpolation</h4>
+            <p>
+              f-string adalah cara modern untuk menyisipkan nilai variabel ke
+              dalam string:
+            </p>
+            <code
+              >nama = "Budi" umur = 25 pesan = f"Nama saya {nama} dan umur saya
+              {umur} tahun" print(pesan) # Output: "Nama saya Budi dan umur saya
+              25 tahun"</code
+            >
+
+            <h4>8. Multiline f-string</h4>
+            <p>
+              f-string juga bisa digunakan untuk teks dengan banyak baris
+              menggunakan triple quotes:
+            </p>
+            <code
+              >nama = "Ani" umur = 22 hobi = "membaca" biodata = f""" BIODATA
+              ============== Nama : {nama} Umur : {umur} tahun Hobi : {hobi} """
+              print(biodata)</code
+            >
+
+            <h4>9. Slicing - Mengambil Sebagian String</h4>
+            <p>
+              Slicing digunakan untuk mengambil sebagian karakter dari string:
+            </p>
+            <code
+              >teks = "Python Keren" huruf_pertama = teks[0] # Mengambil
+              karakter pertama: 'P' tiga_huruf = teks[0:3] # Mengambil 3
+              karakter pertama: 'Pyt' terakhir = teks[-1] # Karakter terakhir:
+              'n'</code
+            >
+
+            <!-- Interactive Code Playground -->
+            <div class="code-playground">
+              <h3>Coba Sendiri! 🧪</h3>
+              <p>
+                Silakan coba berbagai operasi string di bawah ini. Gunakan
+                contoh kode atau buat kode sendiri.
+              </p>
+              <div class="code-editor-container">
+                <textarea
+                  id="code-editor"
+                  class="code-editor"
+                  spellcheck="false"
+                  placeholder="# Tulis kode Python di sini..."
+                >
+nama = "Python"
+umur = 30
+# Coba manipulasi string di sini
+hasil = f"{nama} berumur {umur} tahun"
+print(hasil)
+</textarea
+                >
+              </div>
+              <button id="run-code" class="run-button">Jalankan Kode</button>
+              <div id="code-output" class="code-output">
+                <div class="console-line">
+                  Hasil output akan muncul di sini...
+                </div>
+              </div>
+            </div>
+
+            <!-- Badge System for String Mastery -->
+            <h3>Badge Penguasaan String</h3>
+            <p>
+              Selesaikan tantangan-tantangan berikut untuk mendapatkan badge:
+            </p>
+
+            <div class="badge-system">
+              <div class="badge" id="concat-badge" data-skill="concatenation">
+                +
+                <div class="badge-tooltip">
+                  Penggabungan String: Gabungkan dua string dengan operator +
+                </div>
+              </div>
+              <div class="badge" id="length-badge" data-skill="length">
+                L
+                <div class="badge-tooltip">
+                  Panjang String: Gunakan len() untuk menghitung karakter
+                </div>
+              </div>
+              <div class="badge" id="case-badge" data-skill="case">
+                Aa
+                <div class="badge-tooltip">
+                  Manipulasi Case: Gunakan upper() dan lower()
+                </div>
+              </div>
+              <div class="badge" id="slice-badge" data-skill="slice">
+                [ ]
+                <div class="badge-tooltip">
+                  Slicing: Ekstrak substring dengan notasi slice [start:end]
+                </div>
+              </div>
+              <div class="badge" id="format-badge" data-skill="format">
+                f""
+                <div class="badge-tooltip">
+                  Formatting: Gunakan f-string untuk format string
+                </div>
+              </div>
+            </div>
+
+            <!-- Typing Exercise -->
+            <div class="typing-exercise">
+              <h4>Latihan Ketik Cepat: String Method</h4>
+              <p>Ketik kode berikut dengan benar untuk mendapatkan poin:</p>
+              <div class="target-text">
+                teks = "python adalah bahasa yang hebat" hasil =
+                teks.title().replace("Hebat", "Luar Biasa") print(hasil) #
+                Python Adalah Bahasa Yang Luar Biasa
+              </div>
+              <textarea
+                id="typing-input"
+                class="input-area"
+                placeholder="Ketik kode di atas di sini..."
+              ></textarea>
+              <button id="check-typing" class="run-button">Periksa</button>
+              <div id="typing-feedback" class="feedback"></div>
+            </div>
+
+            <div class="quiz-container">
+              <h3>Mini Quiz:</h3>
+              <p>
+                Jika <code>kalimat = "Belajar Python"</code>, apa hasil dari
+                <code>kalimat[2:7]</code>?
+              </p>
+              <div class="quiz-option" data-correct="false">Belaja</div>
+              <div class="quiz-option" data-correct="true">lajar</div>
+              <div class="quiz-option" data-correct="false">Belajar P</div>
+            </div>
+
+            <div class="quiz-container">
+              <h3>Quiz String Manipulation:</h3>
+              <p>
+                Jika kita memiliki kode: <code>teks = " hello world "</code>,
+                apa output dari <code>teks.strip().upper()</code>?
+              </p>
+              <div class="quiz-option" data-correct="false">hello world</div>
+              <div class="quiz-option" data-correct="false">HELLO WORLD</div>
+              <div class="quiz-option" data-correct="true">HELLO WORLD</div>
+            </div>
+
+            <div class="nav-buttons">
+              <button class="nav-button" id="prev-button">Sebelumnya</button>
+              <button class="nav-button" id="next-button">Selanjutnya</button>
+            </div>
+          </div>
+
+          <div class="slide" id="conditional">
+            <h2>Logika Kondisional</h2>
+            <p>
+              Logika kondisional adalah cara kita membuat keputusan dalam
+              program. Ini seperti persimpangan jalan - kita memilih jalan yang
+              berbeda berdasarkan situasi.
+            </p>
+
+            <h3>Pernyataan If-Else:</h3>
+            <code
+              >umur = int(input("Berapa umur kamu? ")) if umur < 17: print("Kamu
+              masih di bawah umur.") print("Belum boleh nonton film dewasa!")
+              elif umur >= 17 and umur < 50: print("Kamu sudah dewasa.") else:
+              print("Kamu sudah senior.") print("Program selesai.")</code
+            >
+            >
+
+            <p>
+              Perhatikan indentasi (spasi di awal baris) yang menentukan blok
+              kode. Tanpa kurung kurawal seperti di bahasa lain, Python
+              menggunakan indentasi untuk menetapkan blok kode mana yang menjadi
+              bagian dari kondisi tertentu.
+            </p>
+
+            <div class="example-container">
+              <h3>Operator Perbandingan:</h3>
+              <ul>
+                <li><code>==</code> : Sama dengan</li>
+                <li><code>!=</code> : Tidak sama dengan</li>
+                <li><code>&lt;</code> : Kurang dari</li>
+                <li><code>&gt;</code> : Lebih dari</li>
+                <li><code>&lt;=</code> : Kurang dari atau sama dengan</li>
+                <li><code>&gt;=</code> : Lebih dari atau sama dengan</li>
+              </ul>
+            </div>
+
+            <h3>Operator Logika:</h3>
+            <code
+              >is_logged_in = True has_permission = False if is_logged_in and
+              has_permission: print("Anda boleh mengakses fitur ini") elif
+              is_logged_in and not has_permission: print("Anda login tapi tidak
+              punya izin") elif not is_logged_in: print("Silakan login
+              dulu")</code
+            >
+            >
+
+            <p>
+              Operator logika memungkinkan kita menggabungkan beberapa kondisi:
+            </p>
+            <ul>
+              <li><code>and</code> : Kedua kondisi harus benar</li>
+              <li><code>or</code> : Salah satu kondisi benar</li>
+              <li><code>not</code> : Membalikkan kondisi</li>
+            </ul>
+
+            <div class="tip-box">
+              <p>
+                <strong>Analogi:</strong> Kondisi if-elif-else seperti penjaga
+                tiket di bioskop. Pertama dia cek apakah kamu anak-anak (if),
+                remaja (elif), atau dewasa (else), kemudian memberi harga tiket
+                yang sesuai.
+              </p>
+            </div>
+
+            <h3>Cara Cerdas - Operator Ternary:</h3>
+            <code
+              >umur = 20 status = "Dewasa" if umur >= 17 else "Anak-anak"
+              print(status) # Output: Dewasa</code
+            >
+
+            <div class="quiz-container">
+              <h3>Mini Quiz:</h3>
+              <p>Apa output dari kode berikut?</p>
+              <code
+                >x = 5 if x > 10: print("Lebih dari 10") elif x > 3:
+                print("Lebih dari 3") else: print("3 atau kurang")</code
+              >
+              <div class="quiz-option" data-correct="false">Lebih dari 10</div>
+              <div class="quiz-option" data-correct="true">Lebih dari 3</div>
+              <div class="quiz-option" data-correct="false">3 atau kurang</div>
+            </div>
+
+            <div class="nav-buttons">
+              <button class="nav-button" id="prev-button">Sebelumnya</button>
+              <button class="nav-button" id="next-button">Selanjutnya</button>
+            </div>
+          </div>
+
+          <div class="slide" id="loop">
+            <h2>Perulangan</h2>
+            <p>
+              Perulangan (loop) adalah cara kita mengulang tindakan tanpa
+              menulis kode berulang kali. Bayangkan kamu mau memotong 100 keping
+              roti - daripada menuliskan "potong roti" 100 kali, kamu cukup
+              tulis "potong roti 100 kali"!
+            </p>
+
+            <h3>Loop For:</h3>
+            <p>
+              Loop For biasanya digunakan saat kita tahu berapa kali kita ingin
+              mengulang sesuatu.
+            </p>
+            <code
+              ># Contoh loop sederhana for i in range(5): print(f"Ini
+              pengulangan ke-{i+1}")</code
+            >
+
+            <h3>Loop While:</h3>
+            <p>
+              Loop While digunakan saat kita tidak tahu pasti berapa kali
+              perulangan akan terjadi, tapi kita tahu kapan harus berhenti.
+            </p>
+            <code
+              >hitung = 1 while hitung <= 5: print(f"Hitungan ke-{hitung}")
+              hitung = hitung + 1</code
+            >
+
+            <h3>Kontrol Perulangan:</h3>
+            <div class="example-container">
+              <p><code>break</code> - keluar dari loop:</p>
+              <code
+                >for i in range(10): print(i) if i == 3: print("Cukup sampai
+                3!") break # Hanya mencetak 0, 1, 2, 3, "Cukup sampai 3!"</code
+              >
+
+              <p><code>continue</code> - lompat ke iterasi berikutnya:</p>
+              <code
+                >for i in range(5): if i == 2: print("Lewati angka 2") continue
+                print(i) # Mencetak: 0, 1, "Lewati angka 2", 3, 4</code
+              >
+            </div>
+
+            <div class="tip-box">
+              <p>
+                <strong>Analogi:</strong> Loop For seperti resep masak dengan
+                langkah-langkah yang jelas: "Uleni adonan sebanyak 10 kali".
+                Loop While seperti mengatakan "Uleni adonan sampai terasa
+                kenyal".
+              </p>
+            </div>
+
+            <div class="quiz-container">
+              <h3>Mini Quiz:</h3>
+              <p>Apa output dari kode berikut?</p>
+              <code
+                >total = 0 for i in range(1, 5): if i == 3: continue total += i
+                print(total)</code
+              >
+              <div class="quiz-option" data-correct="false">10</div>
+              <div class="quiz-option" data-correct="true">7</div>
+              <div class="quiz-option" data-correct="false">6</div>
+            </div>
+
+            <div class="nav-buttons">
+              <button class="nav-button" id="prev-button">Sebelumnya</button>
+              <button class="nav-button" id="next-button" id="finish-button">
+                Selesai
+              </button>
+            </div>
+
+            <!-- Quiz Final Dihapus -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer removed -->
+    </div>
+
+    <div class="achievement" id="achievement">
+      <h3>🏆 Pencapaian Baru!</h3>
+      <p id="achievement-text">Kamu telah menyelesaikan modul pertama!</p>
+    </div>
+
+    <!-- Completion Modal -->
+    <div class="modal" id="completion-modal">
+      <div class="modal-content">
+        <span class="close-modal" id="close-modal">&times;</span>
+        <h2>🎉 Selamat! 🎉</h2>
+        <lottie-player
+          id="confetti-lottie"
+          src="https://assets3.lottiefiles.com/packages/lf20_u4yrau.json"
+          background="transparent"
+          speed="1"
+          style="
+            width: 100%;
+            height: 200px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+          "
+          autoplay
+        ></lottie-player>
+        <p>Kamu telah berhasil mempelajari dasar-dasar Python!</p>
+        <p>
+          Jangan lupa untuk bergabung dengan
+          <strong>Webinar Day 3</strong> untuk mengembangkan kemampuanmu dalam
+          membuat Fun Project dengan AI.
+        </p>
+        <button class="modal-button" id="join-webinar-btn">
+          Gabung Webinar Day 3
+        </button>
+        <audio
+          id="success-sound"
+          src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3"
+          preload="auto"
+        ></audio>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Variables
+        const slides = document.querySelectorAll(".slide");
+        const menuItems = document.querySelectorAll(".menu-item");
+        const prevButton = document.querySelectorAll("#prev-button");
+        const nextButton = document.querySelectorAll("#next-button");
+        const progress = document.getElementById("progress");
+        const achievement = document.getElementById("achievement");
+        const achievementText = document.getElementById("achievement-text");
+        const completionModal = document.getElementById("completion-modal");
+        const closeModalBtn = document.getElementById("close-modal");
+        const joinWebinarBtn = document.getElementById("join-webinar-btn");
+        const successSound = document.getElementById("success-sound");
+        const confettiLottie = document.getElementById("confetti-lottie");
+        let currentSlideIndex = 0;
+        let completedSlides = new Set();
+
+        // Initialize progress
+        updateProgress();
+
+        // Menu click handlers
+        menuItems.forEach((item) => {
+          item.addEventListener("click", function () {
+            const slideId = this.getAttribute("data-slide");
+
+            // Remove active class from all menu items and slides
+            menuItems.forEach((i) => i.classList.remove("active"));
+            slides.forEach((s) => s.classList.remove("active"));
+
+            // Add active class to clicked menu item and corresponding slide
+            this.classList.add("active");
+            document.getElementById(slideId).classList.add("active");
+
+            // Update current slide index
+            currentSlideIndex = Array.from(menuItems).indexOf(this);
+            updateNavButtons();
+
+            // Hide final quiz if we navigate away from last slide
+            if (currentSlideIndex !== slides.length - 1) {
+              finalQuiz.style.display = "none";
+              finalQuizActive = false;
+            }
+          });
+        });
+
+        // Next button click handlers
+        nextButton.forEach((button) => {
+          button.addEventListener("click", function () {
+            // Handle finish button click on the last slide
+            if (currentSlideIndex === slides.length - 1) {
+              showCompletionModal();
+              return;
+            }
+
+            if (currentSlideIndex < slides.length - 1) {
+              // Mark current slide as completed
+              completedSlides.add(currentSlideIndex);
+
+              // Move to next slide
+              currentSlideIndex++;
+              updateActiveSlide();
+              showAchievement(
+                `Kamu telah menyelesaikan modul ${currentSlideIndex}!`
+              );
+
+              // Add XP when moving to next slide
+              addPoints(15, `Menyelesaikan modul ${currentSlideIndex - 1}`);
+            }
+          });
+        });
+
+        // Previous button click handlers
+        prevButton.forEach((button) => {
+          button.addEventListener("click", function () {
+            if (currentSlideIndex > 0) {
+              currentSlideIndex--;
+              updateActiveSlide();
+              finalQuiz.style.display = "none";
+              finalQuizActive = false;
+            }
+          });
+        });
+
+        // Quiz option click handlers
+        const quizOptions = document.querySelectorAll(".quiz-option");
+        quizOptions.forEach((option) => {
+          option.addEventListener("click", function () {
+            const quizContainer = this.closest(".quiz-container");
+            const options = quizContainer.querySelectorAll(".quiz-option");
+
+            // Skip if this option is already selected
+            if (
+              this.style.backgroundColor === "rgb(39, 174, 96)" ||
+              this.style.backgroundColor === "rgb(231, 76, 60)"
+            ) {
+              return;
+            }
+
+            options.forEach((opt) => {
+              opt.style.backgroundColor = "";
+            });
+
+            if (this.getAttribute("data-correct") === "true") {
+              this.style.backgroundColor = "#27ae60";
+              showAchievement("Jawaban benar! +10 XP");
+              addPoints(10, "Quiz yang benar");
+            } else {
+              this.style.backgroundColor = "#e74c3c";
+              showAchievement("Coba lagi!");
+            }
+          });
+        });
+
+        // Check answer button for final quiz
+        if (checkAnswerBtn) {
+          checkAnswerBtn.addEventListener("click", function () {
+            // Find if correct answer was selected
+            const finalQuizContainer = document.querySelector(
+              ".final-quiz-container"
+            );
+            const options = finalQuizContainer.querySelectorAll(".quiz-option");
+            let correctAnswerSelected = false;
+
+            options.forEach((option) => {
+              if (
+                option.getAttribute("data-correct") === "true" &&
+                option.style.backgroundColor === "rgb(39, 174, 96)"
+              ) {
+                correctAnswerSelected = true;
+              }
+            });
+
+            if (correctAnswerSelected) {
+              // Show explanation
+              answerExplanation.style.display = "block";
+
+              // Show completion message
+              setTimeout(() => {
+                completionMessage.style.display = "block";
+
+                // Trigger confetti
+                confetti({
+                  particleCount: 150,
+                  spread: 180,
+                  origin: { y: 0.6 },
+                });
+
+                // Easter egg: clicking on any completion button triggers more confetti
+                const nextTopicBtns =
+                  document.querySelectorAll(".next-topic-btn");
+                nextTopicBtns.forEach((btn) => {
+                  btn.addEventListener("click", function () {
+                    confetti({
+                      particleCount: 100,
+                      spread: 120,
+                      origin: { y: 0.8 },
+                    });
+                  });
+                });
+              }, 1500);
+            } else {
+              showAchievement("Pilih jawaban yang benar terlebih dahulu!");
+            }
+          });
+        }
+
+        // Helper functions
+        function updateActiveSlide() {
+          menuItems.forEach((item) => item.classList.remove("active"));
+          slides.forEach((slide) => slide.classList.remove("active"));
+
+          menuItems[currentSlideIndex].classList.add("active");
+          slides[currentSlideIndex].classList.add("active");
+
+          updateNavButtons();
+          updateProgress();
+        }
+
+        function updateNavButtons() {
+          prevButton.forEach((button) => {
+            button.disabled = currentSlideIndex === 0;
+          });
+
+          // Jangan nonaktifkan tombol Selesai di slide terakhir
+          nextButton.forEach((button) => {
+            // Biarkan tombol selesai tetap aktif
+          });
+        }
+
+        function updateProgress() {
+          const progressPercent =
+            ((completedSlides.size + 1) / slides.length) * 100;
+          progress.style.width = `${progressPercent}%`;
+        }
+
+        function showAchievement(text) {
+          achievementText.textContent = text;
+          achievement.classList.add("show");
+
+          setTimeout(() => {
+            achievement.classList.remove("show");
+          }, 3000);
+        }
+
+        // Modal functions
+        function showCompletionModal() {
+          completionModal.classList.add("show");
+
+          // Play success sound
+          if (successSound) {
+            successSound.play();
+          }
+
+          // Restart Lottie animation
+          if (confettiLottie) {
+            confettiLottie.seek(0);
+            confettiLottie.play();
+          }
+
+          // Trigger confetti effect
+          confetti({
+            particleCount: 200,
+            spread: 180,
+            origin: { y: 0.6 },
+            colors: ["#f1c40f", "#e74c3c", "#3498db", "#2ecc71", "#9b59b6"],
+          });
+
+          // Repeat confetti for more festive effect
+          let confettiInterval = setInterval(() => {
+            confetti({
+              particleCount: 50,
+              angle: Math.random() * 360,
+              spread: 90,
+              origin: {
+                y: Math.random() * 0.5 + 0.3,
+                x: Math.random(),
+              },
+              gravity: 0.7,
+              colors: ["#f1c40f", "#e74c3c", "#3498db", "#2ecc71", "#9b59b6"],
+            });
+          }, 300);
+
+          // Stop confetti after 3 seconds
+          setTimeout(() => {
+            clearInterval(confettiInterval);
+          }, 3000);
+        }
+
+        // Close modal handler
+        if (closeModalBtn) {
+          closeModalBtn.addEventListener("click", function () {
+            console.log("Close button clicked"); // Debugging
+            completionModal.classList.remove("show");
+          });
+        } else {
+          console.log("Close button not found"); // Debugging
+        }
+
+        // Add keyboard escape to close modal
+        document.addEventListener("keydown", function (event) {
+          if (
+            event.key === "Escape" &&
+            completionModal.classList.contains("show")
+          ) {
+            completionModal.classList.remove("show");
+          }
+        });
+
+        // Join webinar button handler
+        if (joinWebinarBtn) {
+          joinWebinarBtn.addEventListener("click", function () {
+            // Here you can add a link to the webinar registration page
+            alert(
+              "Terima kasih! Anda akan segera diarahkan ke halaman pendaftaran webinar."
+            );
+            // window.location.href = "https://your-webinar-registration-url.com";
+          });
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener("click", function (event) {
+          console.log("Window click", event.target.id); // Debugging
+          if (event.target.classList.contains("modal")) {
+            completionModal.classList.remove("show");
+          }
+        });
+      });
+    </script>
+
+    <!-- Interactive Code Playground and Points System -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Points system variables
+        const pointsDisplay = document.getElementById("points-display");
+        const pointsValue = document.getElementById("points-value");
+        let userPoints = 0;
+        let earnedBadges = new Set();
+
+        // Code playground elements
+        const codeEditor = document.getElementById("code-editor");
+        const runCodeBtn = document.getElementById("run-code");
+        const codeOutput = document.getElementById("code-output");
+
+        // Typing exercise elements
+        const typingInput = document.getElementById("typing-input");
+        const checkTypingBtn = document.getElementById("check-typing");
+        const typingFeedback = document.getElementById("typing-feedback");
+        const targetText = document.querySelector(".target-text").innerText;
+
+        // Badge elements
+        const badges = document.querySelectorAll(".badge");
+
+        // Initialize and load saved data
+        loadSavedData();
+
+        // Code playground functionality
+        if (runCodeBtn && codeEditor && codeOutput) {
+          runCodeBtn.addEventListener("click", function () {
+            const code = codeEditor.value;
+
+            // Create a simulated Python output system
+            let output = [];
+            let error = null;
+
+            // Very simple Python interpreter simulation
+            try {
+              // Simulate print function
+              const simulatePython = (code) => {
+                const lines = code.split("\n");
+                let variables = {};
+
+                for (let line of lines) {
+                  line = line.trim();
+
+                  // Skip comments and empty lines
+                  if (line.startsWith("#") || line === "") continue;
+
+                  // Handle print statements
+                  if (line.startsWith("print(")) {
+                    const printContent = line.substring(6, line.length - 1);
+                    const printValue = evaluateExpression(
+                      printContent,
+                      variables
+                    );
+                    output.push(printValue);
+                  }
+                  // Handle variable assignment
+                  else if (line.includes("=") && !line.includes("==")) {
+                    const parts = line.split("=");
+                    const varName = parts[0].trim();
+                    const expression = parts[1].trim();
+                    variables[varName] = evaluateExpression(
+                      expression,
+                      variables
+                    );
+
+                    // Check for badge achievements
+                    checkBadgeAchievements(line, variables);
+                  }
+                }
+              };
+
+              // Evaluate expressions
+              const evaluateExpression = (expr, variables) => {
+                // Handle string literals
+                if (
+                  (expr.startsWith('"') && expr.endsWith('"')) ||
+                  (expr.startsWith("'") && expr.endsWith("'"))
+                ) {
+                  return expr.substring(1, expr.length - 1);
+                }
+
+                // Handle f-strings basic simulation
+                if (expr.startsWith('f"') || expr.startsWith("f'")) {
+                  const stringContent = expr.substring(2, expr.length - 1);
+                  return stringContent.replace(
+                    /\{([^}]+)\}/g,
+                    (match, varName) => {
+                      return variables[varName.trim()] || match;
+                    }
+                  );
+                }
+
+                // Handle variables
+                if (variables[expr]) {
+                  return variables[expr];
+                }
+
+                // Handle len() function
+                if (expr.startsWith("len(") && expr.endsWith(")")) {
+                  const innerExpr = expr.substring(4, expr.length - 1);
+                  const value = evaluateExpression(innerExpr, variables);
+                  return value.length.toString();
+                }
+
+                // Handle basic string methods
+                if (expr.includes(".")) {
+                  const parts = expr.split(".");
+                  const varName = parts[0].trim();
+                  const method = parts[1].trim();
+
+                  if (
+                    variables[varName] &&
+                    typeof variables[varName] === "string"
+                  ) {
+                    if (method.startsWith("upper(")) {
+                      return variables[varName].toUpperCase();
+                    }
+                    if (method.startsWith("lower(")) {
+                      return variables[varName].toLowerCase();
+                    }
+                    if (method.startsWith("strip(")) {
+                      return variables[varName].trim();
+                    }
+                    if (method.startsWith("replace(")) {
+                      const argsMatch = method.match(
+                        /replace\(([^,]+),\s*([^)]+)\)/
+                      );
+                      if (argsMatch) {
+                        const oldStr = evaluateExpression(
+                          argsMatch[1],
+                          variables
+                        );
+                        const newStr = evaluateExpression(
+                          argsMatch[2],
+                          variables
+                        );
+                        return variables[varName].replace(oldStr, newStr);
+                      }
+                    }
+                  }
+                }
+
+                // If all else fails, return the expression itself
+                return expr;
+              };
+
+              // Check for badge achievements in the code
+              const checkBadgeAchievements = (line, variables) => {
+                // Check string concatenation
+                if (line.includes("+") && !line.match(/\d+\s*\+/)) {
+                  awardBadge("concat-badge", "Penggabungan String", 15);
+                }
+
+                // Check for length usage
+                if (line.includes("len(")) {
+                  awardBadge("length-badge", "Panjang String", 15);
+                }
+
+                // Check for case manipulation
+                if (line.includes(".upper(") || line.includes(".lower(")) {
+                  awardBadge("case-badge", "Manipulasi Case", 15);
+                }
+
+                // Check for slicing
+                if (line.match(/\[\d+:\d+\]/)) {
+                  awardBadge("slice-badge", "Slicing String", 15);
+                }
+
+                // Check for f-string
+                if (line.includes('f"') || line.includes("f'")) {
+                  awardBadge("format-badge", "Formatting String", 15);
+                }
+              };
+
+              simulatePython(code);
+            } catch (e) {
+              error = e.message;
+            }
+
+            // Display output or error
+            codeOutput.innerHTML = "";
+
+            if (error) {
+              codeOutput.innerHTML += `<div class="console-line error">${error}</div>`;
+            } else if (output.length > 0) {
+              for (let line of output) {
+                codeOutput.innerHTML += `<div class="console-line">${line}</div>`;
+              }
+
+              // Award points for running code
+              addPoints(5, "Menjalankan kode");
+            } else {
+              codeOutput.innerHTML = `<div class="console-line">Tidak ada output. Apakah kamu menggunakan perintah print()?</div>`;
+            }
+          });
+        }
+
+        // Typing exercise
+        if (checkTypingBtn && typingInput && typingFeedback) {
+          checkTypingBtn.addEventListener("click", function () {
+            const userInput = typingInput.value;
+
+            // Calculate accuracy percentage
+            const accuracy = calculateAccuracy(targetText, userInput);
+
+            if (accuracy >= 95) {
+              typingFeedback.textContent = `Sempurna! Akurasi: ${accuracy}%. +20 XP`;
+              typingFeedback.style.color = "var(--success-color)";
+              addPoints(20, "Latihan Ketik");
+              showAchievement("Latihan ketik berhasil! +20 XP");
+            } else if (accuracy >= 80) {
+              typingFeedback.textContent = `Hampir sempurna! Akurasi: ${accuracy}%. +10 XP`;
+              typingFeedback.style.color = "var(--warning-color)";
+              addPoints(10, "Latihan Ketik");
+            } else {
+              typingFeedback.textContent = `Perlu latihan lagi. Akurasi: ${accuracy}%`;
+              typingFeedback.style.color = "var(--error-color)";
+            }
+          });
+        }
+
+        // Points and badges system
+        function calculateAccuracy(target, input) {
+          if (!input) return 0;
+
+          target = target.trim();
+          input = input.trim();
+
+          let correctChars = 0;
+          const maxLength = Math.max(target.length, input.length);
+
+          for (let i = 0; i < maxLength; i++) {
+            if (
+              i < input.length &&
+              i < target.length &&
+              input[i] === target[i]
+            ) {
+              correctChars++;
+            }
+          }
+
+          return Math.round((correctChars / maxLength) * 100);
+        }
+
+        function updatePointsDisplay() {
+          if (pointsValue) {
+            pointsValue.textContent = userPoints;
+          }
+        }
+
+        function addPoints(points, reason) {
+          userPoints += points;
+          updatePointsDisplay();
+          updatePetStatus();
+
+          // Local storage to persist points between sessions
+          localStorage.setItem("pythonTutorialPoints", userPoints);
+        }
+
+        function awardBadge(badgeId, achievementName, points) {
+          const badge = document.getElementById(badgeId);
+
+          if (badge && !earnedBadges.has(badgeId)) {
+            badge.classList.add("earned");
+            earnedBadges.add(badgeId);
+
+            // Save earned badges in local storage
+            localStorage.setItem(
+              "earnedBadges",
+              JSON.stringify([...earnedBadges])
+            );
+
+            // Award points
+            addPoints(points, `Badge ${achievementName}`);
+            showAchievement(`🏆 Badge Baru: ${achievementName}! +${points} XP`);
+          }
+        }
+
+        // Pet evolution system
+        const petElement = document.getElementById("pet");
+        const petLevelElement = document.getElementById("pet-level");
+        const petXpProgress = document.getElementById("pet-xp-progress");
+        const petXpCurrent = document.getElementById("pet-xp-current");
+        const petXpNext = document.getElementById("pet-xp-next");
+
+        // Pet evolution thresholds & configurations
+        const petConfig = {
+          stages: [
+            { name: "Egg", threshold: 0, level: 1, nextXp: 100 },
+            { name: "Hatchling", threshold: 100, level: 2, nextXp: 250 },
+            { name: "Fledgling", threshold: 350, level: 3, nextXp: 400 },
+            { name: "Bird", threshold: 750, level: 4, nextXp: 750 },
+            { name: "Dragon", threshold: 1500, level: 5, nextXp: null },
+          ],
+        };
+
+        // Initialize pet system
+        function initPetSystem() {
+          updatePetStatus();
+        }
+
+        // Update pet status based on user points
+        function updatePetStatus() {
+          let currentStage = 0;
+
+          // Determine current stage based on XP
+          for (let i = petConfig.stages.length - 1; i >= 0; i--) {
+            if (userPoints >= petConfig.stages[i].threshold) {
+              currentStage = i;
+              break;
+            }
+          }
+
+          // Get current and next stage info
+          const stage = petConfig.stages[currentStage];
+          const nextStage = petConfig.stages[currentStage + 1];
+
+          // Update pet appearance if needed
+          if (!petElement.classList.contains(`pet-stage-${currentStage + 1}`)) {
+            // Remove all stage classes
+            for (let i = 1; i <= 5; i++) {
+              petElement.classList.remove(`pet-stage-${i}`);
+            }
+
+            // Add current stage class
+            petElement.classList.add(`pet-stage-${currentStage + 1}`);
+
+            // Add evolution animation
+            petElement.classList.add("pet-evolution");
+
+            // Create particle effects
+            createEvolutionParticles();
+
+            // Remove animation class after it completes
+            setTimeout(() => {
+              petElement.classList.remove("pet-evolution");
+            }, 1000);
+
+            // Show achievement for evolution
+            if (currentStage > 0) {
+              showAchievement(`🌟 Py-Bot berevolusi menjadi ${stage.name}!`);
+            }
+          }
+
+          // Update level display
+          if (petLevelElement) {
+            petLevelElement.textContent = stage.level;
+          }
+
+          // Update XP bar
+          if (petXpProgress && nextStage) {
+            const currentThreshold = stage.threshold;
+            const nextThreshold = nextStage.threshold;
+            const progressPercent =
+              ((userPoints - currentThreshold) /
+                (nextThreshold - currentThreshold)) *
+              100;
+
+            petXpProgress.style.width = `${progressPercent}%`;
+
+            if (petXpCurrent) {
+              petXpCurrent.textContent = userPoints - currentThreshold;
+            }
+
+            if (petXpNext) {
+              petXpNext.textContent = nextThreshold - currentThreshold;
+            }
+          } else if (petXpProgress && !nextStage) {
+            // Max level reached
+            petXpProgress.style.width = "100%";
+
+            if (petXpCurrent && petXpNext) {
+              petXpCurrent.textContent = "MAX";
+              petXpNext.textContent = "MAX";
+            }
+          }
+        }
+
+        // Create particle effects for evolution animation
+        function createEvolutionParticles() {
+          const particleContainer = document.createElement("div");
+          particleContainer.className = "evolution-particles";
+          petElement.appendChild(particleContainer);
+
+          // Create multiple particles
+          for (let i = 0; i < 30; i++) {
+            const particle = document.createElement("div");
+            particle.className = "evolution-particle";
+
+            // Random position and direction
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 50 + Math.random() * 100;
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance;
+
+            // Set custom properties for the animation
+            particle.style.setProperty("--tx", `${tx}px`);
+            particle.style.setProperty("--ty", `${ty}px`);
+
+            // Random delays
+            particle.style.animationDelay = `${Math.random() * 0.5}s`;
+
+            // Random color
+            const colors = [
+              "var(--accent-neon-blue)",
+              "var(--accent-neon-purple)",
+              "var(--accent-neon-pink)",
+              "var(--accent-neon-green)",
+            ];
+            particle.style.backgroundColor =
+              colors[Math.floor(Math.random() * colors.length)];
+
+            // Add to container
+            particleContainer.appendChild(particle);
+          }
+
+          // Remove particles after animation completes
+          setTimeout(() => {
+            if (particleContainer && particleContainer.parentNode) {
+              particleContainer.parentNode.removeChild(particleContainer);
+            }
+          }, 2000);
+        }
+
+        // Load saved data
+        function loadSavedData() {
+          const savedPoints = localStorage.getItem("pythonTutorialPoints");
+          if (savedPoints) {
+            userPoints = parseInt(savedPoints);
+            updatePointsDisplay();
+          }
+
+          const savedBadges = localStorage.getItem("earnedBadges");
+          if (savedBadges) {
+            const badgeArray = JSON.parse(savedBadges);
+            earnedBadges = new Set(badgeArray);
+
+            // Apply earned status to badges
+            earnedBadges.forEach((badgeId) => {
+              const badge = document.getElementById(badgeId);
+              if (badge) {
+                badge.classList.add("earned");
+              }
+            });
+          }
+
+          // Initialize pet system after loading saved data
+          initPetSystem();
+        }
+
+        // Helper function to show achievements
+        function showAchievement(text) {
+          const achievement = document.getElementById("achievement");
+          const achievementText = document.getElementById("achievement-text");
+
+          if (achievement && achievementText) {
+            achievementText.textContent = text;
+            achievement.classList.add("show");
+
+            setTimeout(() => {
+              achievement.classList.remove("show");
+            }, 3000);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
